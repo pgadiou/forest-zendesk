@@ -2,10 +2,10 @@
 
 const axios = require('axios');
 
-function TicketGetter(Implementation, params, opts, integrationInfo) {
+function UserGetter(Implementation, params, opts, integrationInfo) {
 
   this.perform = function () {
-    return axios.get(`https://forestadmin-sehelp.zendesk.com/api/v2/tickets/${params.ticketId}?include=comment_count`, {
+    return axios.get(`https://forestadmin-sehelp.zendesk.com/api/v2/users/${params.userId}.json`, {
       auth: {
         username: 'sebastienp@forestadmin.com',
         password: 'urn3kfvSbY3w'
@@ -13,10 +13,10 @@ function TicketGetter(Implementation, params, opts, integrationInfo) {
     })
     .then( (response) => {
       console.log(response);
-      return response.data.ticket;
+      return response.data.user;
     });
 
   };
 }
 
-module.exports = TicketGetter;
+module.exports = UserGetter;

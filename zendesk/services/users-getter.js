@@ -2,13 +2,8 @@
 
 const axios = require('axios');
 
-var logger = require('forest-express/dist/services/logger');
-
-var dataUtil = require('forest-express/dist/utils/data');
-const TicketGetter = require('./ticket-getter');
-
-function TicketsGetter(Implementation, params, opts, integrationInfo) {
-  //var apiKey = opts.apiKey;
+function UsersGetter(Implementation, params, opts, integrationInfo) {
+  var apiKey = opts.apiKey;
 
   this.perform = function () {
 
@@ -18,12 +13,11 @@ function TicketsGetter(Implementation, params, opts, integrationInfo) {
         password: 'urn3kfvSbY3w'
       },
       params: {
-        query: 'type:ticket',
+        query: 'type:user',
         per_page: params.page.size,
         page: params.page.number,
         sort_by: 'created_at',
         sort_order: 'asc',
-        include: 'comment_count',
       }
     })
     .then( (response) => {
@@ -74,4 +68,4 @@ function TicketsGetter(Implementation, params, opts, integrationInfo) {
   };
 }
 
-module.exports = TicketsGetter;
+module.exports = UsersGetter;
