@@ -17,17 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: Sequelize.literal('now()'),
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: Sequelize.literal('now()'),
-    },
   }, {
     tableName: 'users',
     underscored: true,
+    timestamp: true,
     schema: process.env.DATABASE_SCHEMA,
   });
 
