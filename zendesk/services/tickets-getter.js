@@ -1,77 +1,25 @@
 "use strict";
 
 const axios = require('axios');
+const AbstractRecordsGetter = require('./abstract-records-getter');
 
-var logger = require('forest-express/dist/services/logger');
+class TicketsGetter extends AbstractRecordsGetter {
 
-var dataUtil = require('forest-express/dist/utils/data');
-const TicketGetter = require('./ticket-getter');
-
-function TicketsGetter(Implementation, params, opts, integrationInfo) {
-  //var apiKey = opts.apiKey;
-
-  this.perform = function () {
-
-    return axios.get('https://forestadmin-sehelp.zendesk.com//api/v2/search.json', {
-      auth: {
-        username: 'sebastienp@forestadmin.com',
-        password: 'urn3kfvSbY3w'
+  getRecords() {
+    return axios.get('https://forestadmin-sehelp.zendesk.com/api/v2/search.json', {
+      headers: {
+        'Authorization': `Basic ${this.getToken()}` 
       },
       params: {
         query: 'type:ticket',
-        per_page: params.page.size,
-        page: params.page.number,
+        per_page: this.params.page.size,
+        page: this.params.page.number,
         sort_by: 'created_at',
         sort_order: 'asc',
         include: 'comment_count',
       }
     })
-    .then( (response) => {
-      let count = response.data.count;
-      console.log(response);
-      return [count, response.data.results];
-    });
-
-
-    // return Implementation.Zendesk.getCustomer(collectionModel, collectionFieldName, params.recordId).then(function (customer) {
-    //   var query = {
-    //     limit: getLimit(),
-    //     starting_after: getStartingAfter(),
-    //     ending_before: getEndingBefore(),
-    //     'include[]': 'total_count'
-    //   };
-
-    //   if (customer && !!customer[collectionFieldName]) {
-    //     query.customer = dataUtil.find(customer[collectionFieldName], embeddedPath);
-    //   }
-
-    //   if (customer && !query.customer) {
-    //     return P.resolve([0, []]);
-    //   }
-
-    //   return getTickets(query).spread(function (count, tickets) {
-    //     return P.map(tickets, function (ticket) {
-    //       if (customer) {
-    //         ticket.customer = customer;
-    //       } else {
-    //         return Implementation.Zendesk.getCustomerByUserField(collectionModel, fieldName, ticket.customer).then(function (customerFound) {
-    //           ticket.customer = customerFound;
-    //           return ticket;
-    //         });
-    //       }
-
-    //       return ticket;
-    //     }).then(function (ticketsData) {
-    //       return [count, ticketsData];
-    //     });
-    //   })["catch"](function (error) {
-    //     logger.warn('Zendesk tickets retrieval issue: ', error);
-    //     return P.resolve([0, []]);
-    //   });
-    // }, function () {
-    //   return P.resolve([0, []]);
-    // });
-  };
+  } 
 }
 
 module.exports = TicketsGetter;

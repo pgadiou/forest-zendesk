@@ -34,7 +34,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
   }
 
   var getTickets = function getTickets(request, response, next) {
-    new TicketsGetter(Implementation, _.extend(request.query, request.params), opts, integrationInfo).perform().then(function (results) {
+    new TicketsGetter(Implementation, _.extend(request.query, request.params), request.user, opts, integrationInfo).perform().then(function (results) {
       var count = results[0];
       var tickets = results[1];
       return serializeTickets(tickets, modelName, {
@@ -46,7 +46,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
   };
 
   var getTicket = function getTicket(request, response, next) {
-    new TicketGetter(Implementation, _.extend(request.query, request.params), opts, integrationInfo).perform().then(function (ticket) {
+    new TicketGetter(Implementation, _.extend(request.query, request.params), request.user, opts, integrationInfo).perform().then(function (ticket) {
       return serializeTickets(ticket, modelName);
     }).then(function (ticket) {
       response.send(ticket);
@@ -54,7 +54,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
   };
 
   var getUsers = function getUsers(request, response, next) {
-    new UsersGetter(Implementation, _.extend(request.query, request.params), opts, integrationInfo).perform().then(function (results) {
+    new UsersGetter(Implementation, _.extend(request.query, request.params), request.user, opts, integrationInfo).perform().then(function (results) {
       var count = results[0];
       var users = results[1];
       return serializeUsers(users, modelName, {
@@ -66,7 +66,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
   };
 
   var getUser = function getUser(request, response, next) {
-    new UserGetter(Implementation, _.extend(request.query, request.params), opts, integrationInfo).perform().then(function (user) {
+    new UserGetter(Implementation, _.extend(request.query, request.params), request.user, opts, integrationInfo).perform().then(function (user) {
       return serializeUsers(user, modelName);
     }).then(function (user) {
       response.send(user);

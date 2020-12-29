@@ -4,7 +4,7 @@ const Liana = require('forest-express-sequelize');
 const { sequelize } = require('../models');
 const models = require('../models');
 const zendesk = require('../zendesk');
-// const { generateAndSendSchema } = require('forest-express/dist');
+const { generateAndSendSchema } = require('forest-express/dist');
 
 var Schemas = require('forest-express/dist/generators/schemas');
 var _ = require('lodash');
@@ -15,10 +15,9 @@ module.exports = async function forestadmin(app) {
 
   var configStore = ConfigStore.getInstance();
   var collections = _.values(Schemas.schemas);
-  var client = new zendesk({mapping: 'users.email', apiKey: 'TODO'}, null);
+  var client = new zendesk({mapping: 'users.email', apiKey: 'mp3R4rLqYgjxc1vg3lj3y9MWyDRmqGY9dwRVSioF'}, null);
   client.defineCollections(collections);
   Schemas.schemas = collections;
-  // generateAndSendSchema({envSecret: process.env.FOREST_ENV_SECRET});
 
   app.use(await Liana.init({
     modelsDir: path.join(__dirname, '../models'),
@@ -28,8 +27,13 @@ module.exports = async function forestadmin(app) {
     sequelize,
   }));
 
-  var client = new zendesk({mapping: 'users.email', apiKey: 'TODO'}, configStore.Implementation);
+  var client = new zendesk({mapping: 'users.email', apiKey: 'mp3R4rLqYgjxc1vg3lj3y9MWyDRmqGY9dwRVSioF'}, configStore.Implementation);
+  let usersSchema = Schemas.schemas['users'];
+  client.defineFields(configStore.Implementation.getModels()['users'], Schemas.schemas['users']);
+  Schemas.schemas['users'] = usersSchema;
+  
   client.defineRoutes(app, models.users);
+  generateAndSendSchema({envSecret: process.env.FOREST_ENV_SECRET});
 
   // client.defineCollections();
   // client.defineSegments();

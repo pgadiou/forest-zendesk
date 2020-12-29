@@ -1,21 +1,21 @@
 "use strict";
 
 const axios = require('axios');
+const AbstractGetter = require('./abstract-getter');
 
-function UserGetter(Implementation, params, opts, integrationInfo) {
+class UserGetter extends AbstractGetter {
 
-  this.perform = function () {
-    return axios.get(`https://forestadmin-sehelp.zendesk.com/api/v2/users/${params.userId}.json`, {
-      auth: {
-        username: 'sebastienp@forestadmin.com',
-        password: 'urn3kfvSbY3w'
+  perform () {
+    return axios.get(`https://forestadmin-sehelp.zendesk.com/api/v2/users/${this.params.userId}.json`, {
+      headers: {
+        'Authorization': `Basic ${this.getToken()}` 
       },
+    
     })
     .then( (response) => {
       console.log(response);
       return response.data.user;
     });
-
   };
 }
 

@@ -1,21 +1,20 @@
 "use strict";
 
 const axios = require('axios');
+const AbstractGetter = require('./abstract-getter');
 
-function TicketGetter(Implementation, params, opts, integrationInfo) {
+class TicketGetter extends AbstractGetter {
 
-  this.perform = function () {
-    return axios.get(`https://forestadmin-sehelp.zendesk.com/api/v2/tickets/${params.ticketId}?include=comment_count`, {
-      auth: {
-        username: 'sebastienp@forestadmin.com',
-        password: 'urn3kfvSbY3w'
+  perform () {
+    return axios.get(`https://forestadmin-sehelp.zendesk.com/api/v2/tickets/${this.params.ticketId}?include=comment_count`, {
+      headers: {
+        'Authorization': `Basic ${this.getToken()}` 
       },
     })
     .then( (response) => {
       console.log(response);
       return response.data.ticket;
     });
-
   };
 }
 

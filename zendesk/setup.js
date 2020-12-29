@@ -120,13 +120,14 @@ exports.createCollections = function (Implementation, apimap, collectionAndField
 };
 
 exports.createFields = function (implementation, model, schemaFields) {
-  // schemaFields.push({
-  //   field: 'stripe_payments',
-  //   displayName: 'Payments',
-  //   type: ['String'],
-  //   reference: "".concat(implementation.getModelName(model), "_stripe_payments.id"),
-  //   column: null,
-  //   isFilterable: false,
-  //   integration: INTEGRATION_NAME
-  // });
+  schemaFields.push({
+    field: 'zendesk_tickets',
+    displayName: 'Tickets',
+    type: ['String'],
+    reference: "zendesk_tickets.id",
+    column: null,
+    isFilterable: false,
+    isVirtual: true,
+    integration: INTEGRATION_NAME
+  });
 };
