@@ -5,7 +5,10 @@ var _ = require('lodash');
 var _require = require('forest-express/dist/utils/integrations'),
     pushIntoApimap = _require.pushIntoApimap;
 
-var INTEGRATION_NAME = 'zendesk';
+const UserUtil = require('../zendesk/services/user-util');
+var ConfigStore = require('forest-express/dist/services/config-store');
+
+const INTEGRATION_NAME = 'zendesk';
 
 exports.createCollections = function (Implementation, apimap, collectionAndFieldName) {
 
@@ -13,6 +16,7 @@ exports.createCollections = function (Implementation, apimap, collectionAndField
     name: "zendesk_tickets",
     displayName: "Zendesk Tickets",
     icon: 'comments-o',
+    idField: 'id',
     integration: INTEGRATION_NAME,
     isVirtual: true,
     isReadOnly: true,
@@ -20,50 +24,66 @@ exports.createCollections = function (Implementation, apimap, collectionAndField
     fields: [{
       field: 'id',
       type: 'Number',
-      isFilterable: false
+      isFilterable: false,
+      isVirtual: true,
     }, {
       field: 'created_at',
       type: 'Date',
-      isFilterable: false
+      isFilterable: false,
+      isVirtual: true,
     }, {
       field: 'updated_at',
       type: 'Date',
-      isFilterable: false
+      isFilterable: false,
+      isVirtual: true,
     }, {
       field: 'type',
       type: 'String',
-      isFilterable: true
+      isFilterable: true,
+      isVirtual: true,
     }, {
       field: 'status',
       type: 'String',
-      isFilterable: false
+      isFilterable: false,
+      isVirtual: true,
     }, {
       field: 'subject',
       type: 'String',
-      isFilterable: false
+      isFilterable: false,
+      isVirtual: true,
     }, {
       field: 'description',
       type: 'String',
-      isFilterable: false
+      isFilterable: false,
+      isVirtual: true,
     }, {
       field: 'comment_count',
       type: 'Number',
-      isFilterable: false
+      isFilterable: false,
+      isVirtual: true,
     }, {
       field: 'requester',
       type: 'String',
       reference: 'zendesk_users.id',
-      isFilterable: true
+      isFilterable: true,
+      isVirtual: true,
     }, {
       field: 'submitter',
       type: 'String',
       reference: 'zendesk_users.id',
-      isFilterable: true
+      isFilterable: true,
+      isVirtual: true,
     }, {
       field: 'assignee',
       type: 'String',
       reference: 'zendesk_users.id',
-      isFilterable: true
+      isFilterable: true,
+      isVirtual: true,
+    }, {
+      field: 'direct_url',
+      type: 'String',
+      isFilterable: false,
+      isVirtual: true,
     } ],
     actions: []
   });
@@ -71,13 +91,15 @@ exports.createCollections = function (Implementation, apimap, collectionAndField
     name: "zendesk_users",
     displayName: "Zendesk Users",
     icon: 'comments-o',
+    idField: 'id',
     integration: INTEGRATION_NAME,
     isVirtual: true,
     isReadOnly: true,
-    paginationType: 'cursor',
+    paginationType: 'page',
     fields: [{
       field: 'id',
       type: 'Number',
+      isPrimaryKey: true,
       isFilterable: false
     }, {
       field: 'name',
@@ -102,7 +124,7 @@ exports.createCollections = function (Implementation, apimap, collectionAndField
     }, {
       field: 'verified',
       type: 'Boolean',
-      isFilterable: true
+      isVirtual: true,
     }, {
       field: 'active',
       type: 'Boolean',
@@ -114,20 +136,50 @@ exports.createCollections = function (Implementation, apimap, collectionAndField
     }, {
       field: 'updated_at',
       type: 'Date',
+      isVirtual: true,
       isFilterable: false
-    }]
+    }, {
+      field: 'direct_url',
+      type: 'String',
+      isFilterable: false,
+    } ]
   });
 };
 
-exports.createFields = function (implementation, model, schemaFields) {
+exports.createFields = function (Implementation, model, schemaFields) {
   schemaFields.push({
-    field: 'zendesk_tickets',
-    displayName: 'Tickets',
+    field: 'zendesk_requested_tickets',
+    //displayName: 'Tickets',
     type: ['String'],
-    reference: "zendesk_tickets.id",
-    column: null,
+    reference: 'zendesk_tickets.id',
+    // column: null,
     isFilterable: false,
+    isReadOnly: false,
     isVirtual: true,
-    integration: INTEGRATION_NAME
+    isSortable: true,
+    // relationship: 'HasMany',
+    // integration: INTEGRATION_NAME,
   });
+  schemaFields.push({
+    field: 'zendesk_user',
+    //displayName: 'ZE User',
+    type: 'String',
+    reference: 'zendesk_users.id',
+    // column: null,
+    isFilterable: false,
+    isReadOnly: false,
+    isVirtual: true,
+    isSortable: true,
+    // integration: INTEGRATION_NAME,
+    get: (record) => {
+      // let userGetter = new UserGetter();
+      // return userGetter.findByEmail(user.email);
+      var configStore = ConfigStore.getInstance();
+      let userUtil = new UserUtil(configStore.zendesk.apiKey);
+      if (!record.currentUser) return null;
+      let zendesk_user = userUtil.findByEmail(record.currentUser.email);
+      delete record.currentUser;
+      return zendesk_user;
+    },
+  });  
 };

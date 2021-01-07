@@ -77,8 +77,11 @@ module.exports = function Routes(app, model, Implementation, opts) {
     if (integrationInfo) {
 
       app.get(path.generate("zendesk_tickets", opts), auth.ensureAuthenticated, getTickets);
-      app.get(path.generate("/:recordId/zendesk_tickets", opts), auth.ensureAuthenticated, getTickets);
+      //app.get(path.generate("/:recordId/zendesk_tickets", opts), auth.ensureAuthenticated, getTickets);
       app.get(path.generate("zendesk_tickets/:ticketId", opts), auth.ensureAuthenticated, getTicket);
+  
+      app.get(path.generate("".concat(modelName,"/:recordId/relationships/zendesk_requested_tickets"), opts), auth.ensureAuthenticated, getTickets);
+
       app.get(path.generate("zendesk_users", opts), auth.ensureAuthenticated, getUsers);
       app.get(path.generate("/:recordId/zendesk_users", opts), auth.ensureAuthenticated, getUsers);
       app.get(path.generate("zendesk_users/:userId", opts), auth.ensureAuthenticated, getUser);    }

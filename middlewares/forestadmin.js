@@ -13,11 +13,11 @@ var ConfigStore = require('forest-express/dist/services/config-store');
 
 module.exports = async function forestadmin(app) {
 
-  var configStore = ConfigStore.getInstance();
-  var collections = _.values(Schemas.schemas);
-  var client = new zendesk({mapping: 'users.email', apiKey: 'mp3R4rLqYgjxc1vg3lj3y9MWyDRmqGY9dwRVSioF'}, null);
-  client.defineCollections(collections);
-  Schemas.schemas = collections;
+  // var configStore = ConfigStore.getInstance();
+  // var collections = _.values(Schemas.schemas);
+  // var client = new zendesk({mapping: 'users.email', apiKey: process.env.ZENDESK_API_TOKEN}, null);
+  // client.defineCollections(collections);
+  // Schemas.schemas = collections;
 
   app.use(await Liana.init({
     modelsDir: path.join(__dirname, '../models'),
@@ -27,12 +27,10 @@ module.exports = async function forestadmin(app) {
     sequelize,
   }));
 
-  var client = new zendesk({mapping: 'users.email', apiKey: 'mp3R4rLqYgjxc1vg3lj3y9MWyDRmqGY9dwRVSioF'}, configStore.Implementation);
-  let usersSchema = Schemas.schemas['users'];
-  client.defineFields(configStore.Implementation.getModels()['users'], Schemas.schemas['users']);
-  Schemas.schemas['users'] = usersSchema;
+  var configStore = ConfigStore.getInstance();
+  var client = new zendesk({mapping: 'users.email', apiKey: process.env.ZENDESK_API_TOKEN}, configStore.Implementation, app);
+  configStore.zendesk = client;
   
-  client.defineRoutes(app, models.users);
   generateAndSendSchema({envSecret: process.env.FOREST_ENV_SECRET});
 
   // client.defineCollections();

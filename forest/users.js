@@ -1,12 +1,25 @@
 const { collection } = require('forest-express-sequelize');
 
-// This file allows you to add to your Forest UI:
-// - Smart actions: https://docs.forestadmin.com/documentation/reference-guide/actions/create-and-manage-smart-actions
-// - Smart fields: https://docs.forestadmin.com/documentation/reference-guide/fields/create-and-manage-smart-fields
-// - Smart relationships: https://docs.forestadmin.com/documentation/reference-guide/relationships/create-a-smart-relationship
-// - Smart segments: https://docs.forestadmin.com/documentation/reference-guide/segments/smart-segments
+const UserUtil = require('../zendesk/services/user-util');
+var ConfigStore = require('forest-express/dist/services/config-store');
+
+const INTEGRATION_NAME = 'zendesk';
+
+let userUtil = new UserUtil(process.env.ZENDESK_API_TOKEN);
+
+
+const axios = require('axios');
+const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
+
 collection('users', {
   actions: [],
-  fields: [],
+  fields: [
+  // {
+  //   field: 'zen_tickets',
+  //   type: ['String'],
+  //   reference: 'users.id',
+  //   //integration: INTEGRATION_NAME,
+  // }
+  ],
   segments: [],
 });

@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('lodash');
+var Schemas = require('forest-express/dist/generators/schemas');
 
 var logger = require('forest-express/dist/services/logger');
 
@@ -8,12 +9,14 @@ var Routes = require('./routes');
 
 var Setup = require('./setup');
 
-function Checker(opts, Implementation) {
+function Checker(opts, Implementation, app) {
   var integrationValid = false;
+  this.apiKey = opts.apiKey;
 
   function hasIntegration() {
     return opts.apiKey;
   }
+
 
   function isProperlyIntegrated() {
     return opts.apiKey && opts.mapping;
@@ -89,6 +92,21 @@ function Checker(opts, Implementation) {
       };
     }
   };
+
+
+  var collections = _.values(Schemas.schemas);
+  this.defineCollections(collections);
+  Schemas.schemas = _.mapValues(_.keyBy(collections, 'name'));
+
+
+ let usersSchema = Schemas.schemas['users'];
+ let usersModel = Implementation.getModels()['users'];
+
+  this.defineFields(usersModel, usersSchema);
+//  Schemas.schemas['users'] = usersSchema;
+  
+  this.defineRoutes(app, usersModel);
+
 }
 
 module.exports = Checker;

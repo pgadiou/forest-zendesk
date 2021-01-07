@@ -21,7 +21,7 @@ function serializeUsers(users, collectionName, meta) {
 
   var type = "zendesk_users";
   return new JSONAPISerializer(type, users, {
-    attributes: ['email', 'name', 'role', 'phone', 'last_login_at', 'verified', 'active', 'created_at', 'updated_at'],
+    attributes: ['email', 'name', 'role', 'phone', 'last_login_at', 'verified', 'active', 'created_at', 'updated_at', 'direct_url'],
     keyForAttribute: function keyForAttribute(key) {
       return key;
     },
