@@ -18,20 +18,20 @@ class UserGetter extends AbstractGetter {
       return response.data.user;
     });
   };
-  findByEmail(email) {
-    return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/search.json`, {
-      headers: {
-        'Authorization': `Basic ${this.getToken()}` 
-      },
-      params: {
-        query: `type:user user:${email}`,
-      }
-    })
-    .then( (response) => {
-      console.log(response);
-      return response.data.user;
-    });
-  }
+  // findByEmail(email) {
+  //   return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/search.json`, {
+  //     headers: {
+  //       'Authorization': `Basic ${this.getToken()}` 
+  //     },
+  //     params: {
+  //       query: `type:user user:${email}`,
+  //     }
+  //   })
+  //   .then( (response) => {
+  //     console.log(response);
+  //     return response.data.user;
+  //   });
+  // }
 }
 
 module.exports = UserGetter;

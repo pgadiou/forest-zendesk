@@ -31,7 +31,7 @@ module.exports = async function forestadmin(app) {
   var client = new zendesk({mapping: 'users.email', apiKey: process.env.ZENDESK_API_TOKEN}, configStore.Implementation, app);
   configStore.zendesk = client;
   
-  generateAndSendSchema({envSecret: process.env.FOREST_ENV_SECRET});
+  //generateAndSendSchema({envSecret: process.env.FOREST_ENV_SECRET});
 
   // client.defineCollections();
   // client.defineSegments();

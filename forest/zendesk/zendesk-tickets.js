@@ -1,0 +1,48 @@
+const { collection } = require('forest-express-sequelize');
+
+collection('zendesk_tickets', {
+  idField: 'id',
+  actions: [],
+  fields: [{
+    field: 'id',
+    type: 'Number',
+    isPrimaryKey: true,
+  }, {
+    field: 'created_at',
+    type: 'Date',
+  }, {
+    field: 'updated_at',
+    type: 'Date',
+  }, {
+    field: 'type',
+    type: 'String',
+  }, {
+    field: 'status',
+    type: 'String',
+  }, {
+    field: 'subject',
+    type: 'String',
+  }, {
+    field: 'description',
+    type: 'String',
+  }, {
+    field: 'comment_count',
+    type: 'Number',
+  }, {
+    field: 'requester',
+    type: 'String',
+    reference: 'zendesk_users.id',
+  }, {
+    field: 'submitter',
+    type: 'String',
+    reference: 'zendesk_users.id',
+  }, {
+    field: 'assignee',
+    type: 'String',
+    reference: 'zendesk_users.id',
+  }, {
+    field: 'direct_url',
+    type: 'String',
+  } ],
+  segments: [],
+});

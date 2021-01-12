@@ -10,24 +10,24 @@ class AbstractRecordsGetter extends AbstractGetter {
     //const embeddedPath = this.integrationInfo.embeddedPath;
     //const fieldName = embeddedPath ? "".concat(collectionFieldName, ".").concat(embeddedPath) : collectionFieldName;
     const that = this;
-    if (this.params.recordId) {
-      return this.Implementation.Stripe.getCustomer(collectionModel, collectionFieldName, this.params.recordId).then(function (customer) {
-        return that.getRecords(true, customer)
-        // .then( (response) => {
-        //   let count = response.data.count;
-        //   console.log(response);
-        //   return [count, response.data.results];
-        // });
-      });
-    } 
-    else {
+    // if (this.params.recordId) {
+    //   return this.Implementation.Stripe.getCustomer(collectionModel, collectionFieldName, this.params.recordId).then(function (customer) {
+    //     return that.getRecords(true, customer)
+    //     // .then( (response) => {
+    //     //   let count = response.data.count;
+    //     //   console.log(response);
+    //     //   return [count, response.data.results];
+    //     // });
+    //   });
+    // } 
+    // else {
       return that.getRecords(false, null)
       // .then( (response) => {
       //   let count = response.data.count;
       //   console.log(response);
       //   return [count, response.data.results];
       // });
-    }
+    // }
   }    
   
   getRecords () {

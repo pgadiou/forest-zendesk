@@ -12,17 +12,18 @@ class UserUtil {
     return Buffer.from(`${email}/token:${this.apiKey}`).toString('base64');
   };
 
-  async findByEmail(email) {
-    if (!email) return null;
+  async findByEmail(email, currentUser) {
+
+    if (!email || !currentUser || !currentUser.email) return null;
     return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/search.json`, {
       headers: {
-        'Authorization': `Basic ${this.getToken(email)}` 
+        'Authorization': `Basic ${this.getToken(currentUser.email)}` 
       },
       params: {
         query: `type:user user:${email}`,
       }
     }).then(response => {
-      console.log(response);
+      //console.log(response);
       return response.data.results[0];    
     })
     // .catch(error => {
