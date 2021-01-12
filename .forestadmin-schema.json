@@ -138,7 +138,7 @@
       "isRequired": false,
       "isSortable": false,
       "isVirtual": true,
-      "reference": "zendesk_users.id",
+      "reference": "zendesk_tickets.id",
       "inverseOf": null,
       "validations": []
     }, {
@@ -554,7 +554,7 @@
       "isRequired": false,
       "isSortable": false,
       "isVirtual": true,
-      "reference": "zendesk_users.id",
+      "reference": "zendesk_tickets.id",
       "inverseOf": null,
       "validations": []
     }],

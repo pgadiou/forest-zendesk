@@ -10,7 +10,7 @@ collection('users', {
     //TODO: how to make it configurable?
     field: 'ze_requested_tickets',
     type: ['String'],
-    reference: 'zendesk_users.id',
+    reference: 'zendesk_tickets.id',
   },
   {
     //TODO: how to make it configurable?

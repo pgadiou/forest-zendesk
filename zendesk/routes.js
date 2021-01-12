@@ -62,8 +62,6 @@ module.exports = function Routes(app, model, Implementation, opts) {
       const recordsSerializer = new RecordSerializer({ name: 'zendesk_users' });
       const recordsSerialized = await recordsSerializer.serialize(records);
       response.send({ ...recordsSerialized, meta:{ count: count }});
-    }).then(function (users) {
-      response.send(users);
     })["catch"](next);
   };
 
