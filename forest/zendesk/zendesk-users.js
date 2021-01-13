@@ -2,6 +2,7 @@ const { collection } = require('forest-express-sequelize');
 const { Zendesk } = require('../../zendesk');
 
 collection('zendesk_users', {
+  isSearchable: true,
   actions: [],
   fields: [{
     field: 'id',
@@ -10,11 +11,18 @@ collection('zendesk_users', {
     field: 'name',
     type: 'String',
   }, {
+    field: 'alias',
+    type: 'String',
+  }, {
     field: 'email',
     type: 'String',
   }, {
     field: 'role',
-    type: 'String',
+    type: 'Enum',
+    enums: ["end-user", "agent", "admin"],
+  }, {
+    field: 'role_type',
+    type: 'Number',
   }, {
     field: 'phone',
     type: 'String',
@@ -28,14 +36,49 @@ collection('zendesk_users', {
     field: 'active',
     type: 'Boolean',
   }, {
+    field: 'suspended',
+    type: 'Boolean',
+  }, {
     field: 'created_at',
     type: 'Date',
+    isSortable: true,
   }, {
     field: 'updated_at',
+    type: 'Date',
+    isSortable: true,
+  }, {
+    field: 'last_login_at',
     type: 'Date',
   }, {
     field: 'direct_url',
     type: 'String',
+  }, {
+    field: 'notes',
+    type: 'String',
+  }, {
+    field: 'details',
+    type: 'String',
+  }, {
+    field: 'tags',
+    type: ['String'],
+  // }, {
+  //   field: 'iana_time_zone',
+  //   type: 'String',
+  }, {
+    field: 'time_zone',
+    type: 'String',
+  }, {
+    field: 'moderator',
+    type: 'Boolean',
+  }, {
+    field: 'only_private_comments',
+    type: 'Boolean',
+  }, {
+    field: 'photo_url',
+    type: 'File',
+    get: (user) => {
+      return user.photo?user.photo.content_url:null;
+    }
   }, {
     field: 'ze_requested_tickets',
     type: ['String'],
@@ -49,7 +92,34 @@ collection('zendesk_users', {
       const user = await Zendesk.getUserByUserField('users', 'email', zendesk_user.email);
       return user;
     }
-
+  }, {
+    field: 'group_filtering_only',
+    type: 'String',
+  }, {
+    field: 'organization_filtering_only',
+    type: 'String',
+  }, {
+    field: 'created_filtering_only',
+    type: 'Dateonly',
+  }, {
+    field: 'updated_filtering_only',
+    type: 'Dateonly',
+  }, {
+    field: 'default_group',
+    type: 'String',
+    reference:'zendesk_groups.id',
+  }, {
+    field: 'default_organization',
+    type: 'String',
+    reference:'zendesk_organizations.id',
+  }, {
+    field: 'groups',
+    type: ['String'],
+    reference:'zendesk_groups.id',
+  }, {
+    field: 'organizations',
+    type: ['String'],
+    reference:'zendesk_organizations.id',
   } ],
   segments: [],
 });

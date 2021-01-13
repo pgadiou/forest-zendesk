@@ -9,20 +9,36 @@ const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com
 class TicketsGetter extends AbstractRecordsGetter {
 
   getRecords(filterPerCustomer, customer) {
-    let requesterQuery = '';
+
+    let filterConditions = this.getFilterConditons();
+
     if (filterPerCustomer) {
-      requesterQuery = `requester:${customer.email}`
+      filterConditions.push(`requester:${customer.email}`);
     }
+
+    for (let i =0; i < filterConditions.length; i++) {
+      if (filterConditions[i].startsWith('type')) {
+        // Replace type by ticket_type
+        filterConditions[i] = `ticket_${filterConditions[i]}`;
+      }
+    }
+    
+    const {sort_by, sort_order} = this.getSort({
+      default_sort_by: 'created_at',
+      default_sort_order: 'desc',
+      collection_name: 'zendesk_tickets',
+    });
+
     return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/search.json`, {
       headers: {
         'Authorization': `Basic ${this.getToken()}` 
       },
       params: {
-        query: `type:ticket ${requesterQuery}`,
+        query: `type:ticket ${filterConditions.join(' ')}`,
         per_page: this.params.page.size,
         page: this.params.page.number,
-        sort_by: 'created_at',
-        sort_order: 'asc',
+        sort_by: sort_by,
+        sort_order: sort_order,
         include: 'comment_count',
       }
     })
@@ -50,7 +66,11 @@ class TicketsGetter extends AbstractRecordsGetter {
     
       //console.log(response);
       return [count, records];
-    });
+    })
+    .catch(error => {
+      console.log(error);
+
+    })
   } 
 }
 

@@ -1,0 +1,41 @@
+const { collection } = require('forest-express-sequelize');
+
+collection('zendesk_organizations', {
+  actions: [],
+  fields: [{
+    field: 'id',
+    type: 'Number',
+  }, {
+    field: 'created_at',
+    type: 'Date',
+  }, {
+    field: 'updated_at',
+    type: 'Date',
+  }, {
+    field: 'name',
+    type: 'String',
+  }, {
+    field: 'details',
+    type: 'String',
+  }, {
+    field: 'domain_names',
+    type: ['String'],
+  }, {
+    field: 'notes',
+    type: 'String',
+  }, {
+    field: 'shared_comments',
+    type: 'Boolean',
+  }, {
+    field: 'shared_tickets',
+    type: 'Boolean',
+  }, {
+    field: 'tags',
+    type: ['String'],
+  }, {
+    field: 'url',
+    type: 'String',
+   }, ],
+
+  segments: [],
+});
