@@ -5,28 +5,29 @@ const AbstractRecordsGetter = require('./abstract-records-getter');
 const _ = require('lodash');
 
 const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
+const constants = require('../constants');
 
 class TicketsGetter extends AbstractRecordsGetter {
 
-  getRecords(filterPerCustomer, customer) {
+  async getRecords() {
 
-    let filterConditions = this.getFilterConditons();
+    let filterConditions = this.getFilterConditons({
+      replaceFieldNames: {'type':'ticket_type'}
+    });
 
-    if (filterPerCustomer) {
-      filterConditions.push(`requester:${customer.email}`);
+    if (this.params.parentRelationshipId) {
+      filterConditions.push(`requester:${this.params.parentRelationshipId}`);
+    }
+    if (this.params.modelNameRelationshipId) {
+      const {Zendesk} = require('../');
+      const user = await Zendesk.getUserByUserField('id', this.params.modelNameRelationshipId);
+      filterConditions.push(`requester:${user.email}`);
     }
 
-    for (let i =0; i < filterConditions.length; i++) {
-      if (filterConditions[i].startsWith('type')) {
-        // Replace type by ticket_type
-        filterConditions[i] = `ticket_${filterConditions[i]}`;
-      }
-    }
-    
     const {sort_by, sort_order} = this.getSort({
       default_sort_by: 'created_at',
       default_sort_order: 'desc',
-      collection_name: 'zendesk_tickets',
+      collection_name: constants.ZENDESK_TICKETS,
     });
 
     return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/search.json`, {

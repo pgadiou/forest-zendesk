@@ -1,6 +1,7 @@
 const { collection } = require('forest-express-sequelize');
+const constants = require('../../zendesk/constants');
 
-collection('zendesk_tickets', {
+collection(constants.ZENDESK_TICKETS, {
   // isSearchable: true,
   actions: [],
   fields: [{
@@ -42,15 +43,15 @@ collection('zendesk_tickets', {
   }, {
     field: 'requester',
     type: 'String',
-    reference: 'zendesk_users.id',
+    reference: `${constants.ZENDESK_USERS}.id`,
   }, {
     field: 'submitter',
     type: 'String',
-    reference: 'zendesk_users.id',
+    reference: `${constants.ZENDESK_USERS}.id`,
   }, {
     field: 'assignee',
     type: 'String',
-    reference: 'zendesk_users.id',
+    reference: `${constants.ZENDESK_USERS}.id`,
   }, {
     field: 'direct_url',
     type: 'String',

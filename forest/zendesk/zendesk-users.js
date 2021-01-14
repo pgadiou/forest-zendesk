@@ -1,7 +1,8 @@
 const { collection } = require('forest-express-sequelize');
 const { Zendesk } = require('../../zendesk');
+const constants = require('../../zendesk/constants');
 
-collection('zendesk_users', {
+collection(constants.ZENDESK_USERS, {
   isSearchable: true,
   actions: [],
   fields: [{
@@ -77,19 +78,19 @@ collection('zendesk_users', {
     field: 'photo_url',
     type: 'File',
     get: (user) => {
-      return user.photo?user.photo.content_url:null;
+      return user.photo ? user.photo.content_url : null;
     }
   }, {
-    field: 'ze_requested_tickets',
+    field: constants.ZENDESK_REQUESTED_TICKETS,
     type: ['String'],
-    reference: 'zendesk_tickets.id',
+    reference: `${constants.ZENDESK_TICKETS}.id`,
   }, {
     field: 'user',
     type: 'String',
     //TODO: how to make this configurable?
     reference: 'users.id', 
     get: async (zendesk_user) => {
-      const user = await Zendesk.getUserByUserField('users', 'email', zendesk_user.email);
+      const user = await Zendesk.getUserByUserField('email', zendesk_user.email);
       return user;
     }
   }, {

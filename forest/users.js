@@ -2,21 +2,22 @@ const { collection } = require('forest-express-sequelize');
 
 const UserUtil = require('../zendesk/services/user-util');
 let userUtil = new UserUtil(process.env.ZENDESK_API_TOKEN);
+const constants = require('../zendesk/constants');
 
 collection('users', {
   actions: [],
   fields: [
   {
     //TODO: how to make it configurable?
-    field: 'ze_requested_tickets',
+    field: constants.ZENDESK_REQUESTED_TICKETS,
     type: ['String'],
-    reference: 'zendesk_tickets.id',
+    reference: `${constants.ZENDESK_TICKETS}.id`,
   },
   {
     //TODO: how to make it configurable?
-    field: 'zendesk_user',
+    field: constants.ZENDESK_USERS,
     type: 'String',
-    reference: 'zendesk_users.id',
+    reference: `${constants.ZENDESK_USERS}.id`,
     get: async (user) => {
       const zendesk_user = await userUtil.findByEmail(user.email, user.currentUser);
       return zendesk_user;

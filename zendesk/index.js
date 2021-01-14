@@ -1,8 +1,6 @@
 "use strict";
 
 var _ = require('lodash');
-var Schemas = require('forest-express/dist/generators/schemas');
-
 var logger = require('forest-express/dist/services/logger');
 
 var Routes = require('./routes');
@@ -36,6 +34,8 @@ function Checker(opts, Implementation, app) {
 
   if (hasIntegration()) {
     if (isProperlyIntegrated()) {
+      const mapping = opts.mapping.split('.');
+      this.mapping = {modelName: mapping[0], fieldName: mapping[1]};
       opts.mapping = castToArray(opts.mapping);
       integrationValid = isMappingValid();
     } else {
@@ -52,52 +52,6 @@ function Checker(opts, Implementation, app) {
       new Routes(app, model, Implementation, opts).perform();
     // }
   };
-
-  // this.defineCollections = function (collections) {
-  //   if (!integrationValid) {
-  //     return;
-  //   }
-
-  //   _.each(opts.mapping, function (collectionAndFieldName) {
-  //     Setup.createCollections(Implementation, collections, collectionAndFieldName);
-  //   });
-  // };
-
-  // this.defineFields = function (model, schema) {
-  //   if (!integrationValid) {
-  //     return;
-  //   }
-
-  //   if (integrationCollectionMatch(opts, model)) {
-  //     Setup.createFields(Implementation, model, schema.fields);
-  //   }
-  // };
-
-  // this.defineSerializationOption = function (model, schema, dest, field) {
-  //   if (integrationValid && field.integration === 'zendesk') {
-  //     dest[field.field] = {
-  //       ref: 'id',
-  //       attributes: [],
-  //       included: false,
-  //       nullIfMissing: true,
-  //       // TODO: This option in the JSONAPISerializer is weird.
-  //       ignoreRelationshipData: true,
-  //       relationshipLinks: {
-  //         related: function related(dataSet) {
-  //           return {
-  //             href: "/forest/".concat(Implementation.getModelName(model), "/").concat(dataSet[schema.idField], "/").concat(field.field)
-  //           };
-  //         }
-  //       }
-  //     };
-  //   }
-  // };
-
-//   var collections = _.values(Schemas.schemas);
-//   this.defineCollections(collections);
-//   Schemas.schemas = _.mapValues(_.keyBy(collections, 'name'));
-
-
  //let usersSchema = Schemas.schemas['users'];
  let usersModel = Implementation.getModels()['users'];
 
@@ -111,11 +65,12 @@ function Checker(opts, Implementation, app) {
 module.exports = Checker;
 
 var configStore = require('forest-express/dist/services/config-store').getInstance();
+var P = require("bluebird");
 
 const Zendesk = {
 
-  getUserByUserField: function (userModelName, userFieldName, userFieldValue) {
-
+  getUserByUserField: function (userFieldName, userFieldValue) {
+    const userModelName = configStore.zendesk.mapping.modelName; 
     const userModel = configStore.Implementation.getModels()[userModelName];
     if (!userModel) {
       return new P(function (resolve) {

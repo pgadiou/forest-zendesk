@@ -5,25 +5,31 @@ const AbstractRecordsGetter = require('./abstract-records-getter');
 const _ = require('lodash');
 
 const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
+const constants = require('../constants');
 
 class UsersGetter extends AbstractRecordsGetter {
 
-  getRecords(filterPerCustomer, customer) {
-    let requesterQuery = '';
-    if (filterPerCustomer) {
-      requesterQuery = `requester:${customer.email}`
-    }
-    
+  getRecords() {
+    let filterConditions = this.getFilterConditons({
+      replaceFieldNames: {'type':'ticket_type'}
+    });
+
+    const {sort_by, sort_order} = this.getSort({
+      default_sort_by: 'created_at',
+      default_sort_order: 'desc',
+      collection_name: constants.ZENDESK_USERS,
+    });
+
     return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/search.json`, {
       headers: {
         'Authorization': `Basic ${this.getToken()}` 
       },
       params: {
-        query: `type:user ${requesterQuery}`,
+        query: `type:user ${filterConditions.join(' ')}`,
         per_page: this.params.page.size,
         page: this.params.page.number,
-        sort_by: 'created_at',
-        sort_order: 'asc',
+        sort_by: sort_by,
+        sort_order: sort_order,
       }
     })
     .then( async (response) => {

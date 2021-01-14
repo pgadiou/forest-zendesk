@@ -142,7 +142,7 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "zendesk_user",
+      "field": "zendesk_users",
       "type": "String",
       "defaultValue": null,
       "enums": null,

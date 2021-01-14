@@ -1,6 +1,7 @@
 const { collection } = require('forest-express-sequelize');
+const constants = require('../../zendesk/constants');
 
-collection('zendesk_organizations', {
+collection(constants.ZENDESK_ORGANIZATIONS, {
   actions: [],
   fields: [{
     field: 'id',
