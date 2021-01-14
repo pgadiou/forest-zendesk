@@ -9,10 +9,14 @@ var IntegrationInformationsGetter = require('forest-express/dist/services/integr
 
 var TicketsGetter = require('./services/tickets-getter');
 var TicketGetter = require('./services/ticket-getter');
+var TicketsCommentsGetter = require('./services/tickets-comments-getter');
+
 var UsersGetter = require('./services/users-getter');
 var UserGetter = require('./services/user-getter');
+
 var GroupsGetter = require('./services/groups-getter');
 var GroupGetter = require('./services/group-getter');
+
 var OrganizationsGetter = require('./services/organizations-getter');
 var OrganizationGetter = require('./services/organization-getter');
 
@@ -65,6 +69,21 @@ module.exports = function Routes(app, model, Implementation, opts) {
     new TicketGetter(Implementation, _.extend(request.query, request.params), request.user, opts, integrationInfo).perform()
     .then(async function (record) {
       serializeRecord(record, constants.ZENDESK_TICKETS, request, response);
+    })["catch"](next);
+  };
+
+  var getTicketsComments = function (request, response, next) {
+    new TicketsCommentsGetter(Implementation, _.extend(request.query, request.params), request.user, opts, integrationInfo).perform()
+    .then(async function ([count, records]) {
+      serializeRecords(records, count, constants.ZENDESK_TICKETS_COMMENTS, request, response);
+    })["catch"](next);
+  };
+
+  var getTicketsComment = function (request, response, next) {
+    request.params.parentRelationshipId = request.params.composedId.split('|')[0];
+    new TicketsCommentsGetter(Implementation, _.extend(request.query, request.params), request.user, opts, integrationInfo).perform()
+    .then(async function ([count, records]) {
+      serializeRecord(records.filter(record => record.id===request.params.composedId)[0], constants.ZENDESK_TICKETS_COMMENTS, request, response);
     })["catch"](next);
   };
 
@@ -123,6 +142,10 @@ module.exports = function Routes(app, model, Implementation, opts) {
       // Route from user model to tickets => smart relationship
       app.get(path.generate("".concat(modelName,`/:modelNameRelationshipId/relationships/${constants.ZENDESK_REQUESTED_TICKETS}`), opts), auth.ensureAuthenticated, getTickets);
 
+      app.get(path.generate(`${constants.ZENDESK_TICKETS}/:parentRelationshipId/relationships/${constants.ZENDESK_TICKET_COMMENTS_RELATIONSHIP}`, opts), auth.ensureAuthenticated, getTicketsComments);
+      app.get(path.generate(`${constants.ZENDESK_TICKETS_COMMENTS}/:composedId`, opts), auth.ensureAuthenticated, getTicketsComment);
+
+
       app.get(path.generate(`${constants.ZENDESK_USERS}`, opts), auth.ensureAuthenticated, getUsers);
       app.get(path.generate(`/:recordId/${constants.ZENDESK_USERS}`, opts), auth.ensureAuthenticated, getUsers);
       app.get(path.generate(`${constants.ZENDESK_USERS}/:userId`, opts), auth.ensureAuthenticated, getUser);    
@@ -130,10 +153,12 @@ module.exports = function Routes(app, model, Implementation, opts) {
       app.get(path.generate(`${constants.ZENDESK_GROUPS}`, opts), auth.ensureAuthenticated, getGroups);
       app.get(path.generate(`/:recordId/${constants.ZENDESK_GROUPS}`, opts), auth.ensureAuthenticated, getGroups);
       app.get(path.generate(`${constants.ZENDESK_GROUPS}/:groupId`, opts), auth.ensureAuthenticated, getGroup);    
+      app.get(path.generate(`${constants.ZENDESK_USERS}/:parentRelationshipId/relationships/${constants.ZENDESK_USER_GROUPS}`, opts), auth.ensureAuthenticated, getGroups);
 
       app.get(path.generate(`${constants.ZENDESK_ORGANIZATIONS}`, opts), auth.ensureAuthenticated, getOrganizations);
       app.get(path.generate(`/:recordId/${constants.ZENDESK_ORGANIZATIONS}`, opts), auth.ensureAuthenticated, getOrganizations);
       app.get(path.generate(`${constants.ZENDESK_ORGANIZATIONS}/:organizationId`, opts), auth.ensureAuthenticated, getOrganization);    
+      app.get(path.generate(`${constants.ZENDESK_USERS}/:parentRelationshipId/relationships/${constants.ZENDESK_USER_ORGANIZATIONS}`, opts), auth.ensureAuthenticated, getOrganizations);
 
     }
   };

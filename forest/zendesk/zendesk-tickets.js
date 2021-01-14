@@ -85,6 +85,10 @@ collection(constants.ZENDESK_TICKETS, {
   }, {
     field: 'due_date_filtering_only',
     type: 'Dateonly',
+  }, {
+    field: constants.ZENDESK_TICKET_COMMENTS_RELATIONSHIP,
+    type: ['String'],
+    reference: `${constants.ZENDESK_TICKETS_COMMENTS}.id`,
   } ],
   segments: [],
 });

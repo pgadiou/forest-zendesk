@@ -108,19 +108,19 @@ collection(constants.ZENDESK_USERS, {
   }, {
     field: 'default_group',
     type: 'String',
-    reference:'zendesk_groups.id',
+    reference: `${constants.ZENDESK_GROUPS}.id`,
   }, {
     field: 'default_organization',
     type: 'String',
-    reference:'zendesk_organizations.id',
+    reference: `${constants.ZENDESK_ORGANIZATIONS}.id`,
   }, {
-    field: 'groups',
+    field: constants.ZENDESK_USER_GROUPS,
     type: ['String'],
-    reference:'zendesk_groups.id',
+    reference: `${constants.ZENDESK_GROUPS}.id`,
   }, {
-    field: 'organizations',
+    field: constants.ZENDESK_USER_ORGANIZATIONS,
     type: ['String'],
-    reference:'zendesk_organizations.id',
+    reference: `${constants.ZENDESK_ORGANIZATIONS}.id`,
   } ],
   segments: [],
 });

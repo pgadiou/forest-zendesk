@@ -7,4 +7,7 @@ module.exports = {
   ZENDESK_GROUPS: 'zendesk_groups',
   ZENDESK_ORGANIZATIONS: 'zendesk_organizations',
   ZENDESK_TICKETS_COMMENTS: 'zendesk_tickets_comments',
+  ZENDESK_TICKET_COMMENTS_RELATIONSHIP: 'ze_tickets_comments',
+  ZENDESK_USER_GROUPS: 'ze_user_groups',
+  ZENDESK_USER_ORGANIZATIONS: 'ze_user_organizations',
 };

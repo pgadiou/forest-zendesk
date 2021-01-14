@@ -15,7 +15,7 @@ collection('users', {
   },
   {
     //TODO: how to make it configurable?
-    field: constants.ZENDESK_USERS,
+    field: 'zendesk_user',
     type: 'String',
     reference: `${constants.ZENDESK_USERS}.id`,
     get: async (user) => {
