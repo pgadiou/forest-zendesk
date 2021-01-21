@@ -859,7 +859,40 @@
       "validations": []
     }],
     "segments": [],
-    "actions": []
+    "actions": [{
+      "name": "Add Comment",
+      "type": "single",
+      "baseUrl": null,
+      "endpoint": "/forest/actions/zendesk-add-comment",
+      "httpMethod": "POST",
+      "redirect": null,
+      "download": false,
+      "fields": [{
+        "field": "Comment",
+        "type": "String",
+        "defaultValue": null,
+        "enums": null,
+        "isRequired": true,
+        "reference": null,
+        "description": "Input the Text for your comment",
+        "position": 0,
+        "widget": null
+      }, {
+        "field": "Private or Public",
+        "type": "Enum",
+        "defaultValue": null,
+        "enums": ["Private", "Public"],
+        "isRequired": true,
+        "reference": null,
+        "description": "Is your comment private or public?",
+        "position": 1,
+        "widget": null
+      }],
+      "hooks": {
+        "change": [],
+        "load": true
+      }
+    }]
   }, {
     "name": "zendesk_tickets_comments",
     "nameOld": "zendesk_tickets_comments",
@@ -1509,7 +1542,7 @@
   "meta": {
     "database_type": "postgres",
     "liana": "forest-express-sequelize",
-    "liana_version": "6.6.3",
+    "liana_version": "6.7.3",
     "engine": "nodejs",
     "engine_version": "14.15.1",
     "orm_version": "5.15.2"

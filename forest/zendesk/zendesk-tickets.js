@@ -3,7 +3,34 @@ const constants = require('../../zendesk/constants');
 
 collection(constants.ZENDESK_TICKETS, {
   // isSearchable: true,
-  actions: [],
+  actions: [{
+    name: 'Add Comment',
+    type: 'single',
+    endpoint: constants.ZENDESK_ACTION_ENDPOINT_ADD_COMMENT,
+    fields: [
+      {
+        field: 'Comment',
+        description: 'Input the Text for your comment',
+        type: 'String',
+        isRequired: true
+      },
+      {
+        field: 'Private or Public',
+        description: 'Is your comment private or public?',
+        type: 'Enum',
+        enums: ['Private', 'Public'],
+        isRequired: true
+      },
+    ],
+    hooks: {
+      load: ({ fields, record }) => {
+        fields['Private or Public'].value = 'Private';
+        return fields;
+      },
+      change: {
+      },
+    },    
+  }],
   fields: [{
     field: 'id',
     type: 'Number',

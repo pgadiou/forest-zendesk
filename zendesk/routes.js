@@ -20,6 +20,8 @@ var GroupGetter = require('./services/group-getter');
 var OrganizationsGetter = require('./services/organizations-getter');
 var OrganizationGetter = require('./services/organization-getter');
 
+var SmartActions = require('./services/smart-actions');
+
 // var serializeTickets = require('./serializers/tickets');
 // var serializeUsers = require('./serializers/users');
 
@@ -131,8 +133,27 @@ module.exports = function Routes(app, model, Implementation, opts) {
     })["catch"](next);
   };  
 
+
+  var actionAddComment = function (request, response, next) {
+    response.send({}); //TODO!!
+  };
+
+  //TODO: retrieve the record instead of sending the Id from the request
+  var performActionHookLoad = function (request, response, next) {
+    let schema =  Implementation.Schemas.schemas[request.body.collectionName];
+    const recordId = request.body.recordIds[0]; // TODO: change here => call the getter?
+    let action = schema.actions.filter (a => request.url.startsWith(a.endpoint))[0];
+    if (action && action.hooks && action.hooks.change) {
+      let result = action.hooks.load({fields: _.keyBy(action.fields, 'field'), record: recordId});
+      response.send({fields: _.values(result)});  
+    }
+  }
+
+
   this.perform = function () {
     if (integrationInfo) {
+      app.post(`${constants.ZENDESK_ACTION_ENDPOINT_ADD_COMMENT}`, auth.ensureAuthenticated, actionAddComment);
+      app.post(`/forest/actions/zendesk-*/hooks/load`, auth.ensureAuthenticated, performActionHookLoad);
 
       app.get(path.generate(`${constants.ZENDESK_TICKETS}`, opts), auth.ensureAuthenticated, getTickets);
       app.get(path.generate(`/:recordId/${constants.ZENDESK_TICKETS}`, opts), auth.ensureAuthenticated, getTickets);

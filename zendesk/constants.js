@@ -10,4 +10,5 @@ module.exports = {
   ZENDESK_TICKET_COMMENTS_RELATIONSHIP: 'ze_tickets_comments',
   ZENDESK_USER_GROUPS: 'ze_user_groups',
   ZENDESK_USER_ORGANIZATIONS: 'ze_user_organizations',
+  ZENDESK_ACTION_ENDPOINT_ADD_COMMENT: '/forest/actions/zendesk-add-comment',
 };
