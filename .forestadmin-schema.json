@@ -868,7 +868,7 @@
       "redirect": null,
       "download": false,
       "fields": [{
-        "field": "Comment",
+        "field": "Content",
         "type": "String",
         "defaultValue": null,
         "enums": null,
@@ -878,7 +878,7 @@
         "position": 0,
         "widget": null
       }, {
-        "field": "Private or Public",
+        "field": "Public",
         "type": "Enum",
         "defaultValue": null,
         "enums": ["Private", "Public"],
@@ -886,6 +886,34 @@
         "reference": null,
         "description": "Is your comment private or public?",
         "position": 1,
+        "widget": null
+      }],
+      "hooks": {
+        "change": [],
+        "load": true
+      }
+    }, {
+      "name": "Change Priority",
+      "type": "single",
+      "baseUrl": null,
+      "endpoint": "/forest/actions/zendesk-change-ticket-priority",
+      "httpMethod": "POST",
+      "redirect": null,
+      "download": false,
+      "fields": [{
+        "field": "New Ticket Priority",
+        "type": "Enum",
+        "defaultValue": null,
+        "enums": [
+          "urgent",
+          "high",
+          "normal",
+          "low"
+        ],
+        "isRequired": true,
+        "reference": null,
+        "description": "What is the new priority?",
+        "position": 0,
         "widget": null
       }],
       "hooks": {

@@ -9,6 +9,7 @@ var IntegrationInformationsGetter = require('forest-express/dist/services/integr
 
 var TicketsGetter = require('./services/tickets-getter');
 var TicketGetter = require('./services/ticket-getter');
+var TicketUpdater = require('./services/ticket-updater');
 var TicketsCommentsGetter = require('./services/tickets-comments-getter');
 
 var UsersGetter = require('./services/users-getter');
@@ -134,19 +135,50 @@ module.exports = function Routes(app, model, Implementation, opts) {
   };  
 
 
-  var actionAddComment = function (request, response, next) {
-    response.send({}); //TODO!!
+  var actionChangeTicketPriority = function (request, response, next) {
+    const values = request.body.data.attributes.values;
+    new TicketUpdater(Implementation, _.extend(request.body, request.params), request.user, opts, integrationInfo)
+    .update({
+      priority: values[constants.ZENDESK_ACTION_FORM_CHANGE_TICKET_PRIORITY],
+    })
+    .then(async function (record) {
+      response.send({
+//        success: '',
+        refresh: { relationships: [constants.ZENDESK_TICKET_COMMENTS_RELATIONSHIP] },
+      });
+    })["catch"](next);
   };
 
-  //TODO: retrieve the record instead of sending the Id from the request
+  var actionAddComment = function (request, response, next) {
+    const values = request.body.data.attributes.values;
+    new TicketUpdater(Implementation, _.extend(request.body, request.params), request.user, opts, integrationInfo)
+    .update({
+      comment: {
+        body: values[constants.ZENDESK_ACTION_FORM_ADD_COMMENT_CONTENT],
+        public: values[constants.ZENDESK_ACTION_FORM_ADD_COMMENT_PUBLIC] === 'Public',
+      }
+    })
+    .then(async function (record) {
+      response.send({
+//        success: '',
+        refresh: { relationships: [constants.ZENDESK_TICKET_COMMENTS_RELATIONSHIP] },
+      });
+    })["catch"](next);
+  };
+
   var performActionHookLoad = function (request, response, next) {
-    let schema =  Implementation.Schemas.schemas[request.body.collectionName];
     const recordId = request.body.recordIds[0]; // TODO: change here => call the getter?
-    let action = schema.actions.filter (a => request.url.startsWith(a.endpoint))[0];
-    if (action && action.hooks && action.hooks.change) {
-      let result = action.hooks.load({fields: _.keyBy(action.fields, 'field'), record: recordId});
-      response.send({fields: _.values(result)});  
-    }
+    //TODO: Use the correct Getter regarding the smart action related collection
+    new TicketGetter(Implementation, _.extend({ticketId: recordId}), request.user, opts, integrationInfo).perform()
+    .then((record) => {
+      let schema =  Implementation.Schemas.schemas[request.body.collectionName];
+      let action = schema.actions.filter (a => request.url.startsWith(a.endpoint))[0];
+      if (action && action.hooks && action.hooks.change) {
+        let result = action.hooks.load({fields: _.keyBy(action.fields, 'field'), record, user: request.user});
+        response.send({fields: _.values(result)});  
+      }  
+    })
+
   }
 
 
@@ -154,6 +186,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
     if (integrationInfo) {
       app.post(`${constants.ZENDESK_ACTION_ENDPOINT_ADD_COMMENT}`, auth.ensureAuthenticated, actionAddComment);
       app.post(`/forest/actions/zendesk-*/hooks/load`, auth.ensureAuthenticated, performActionHookLoad);
+      app.post(`${constants.ZENDESK_ACTION_ENDPOINT_CHANGE_TICKET_PRIORITY}`, auth.ensureAuthenticated, actionChangeTicketPriority);
 
       app.get(path.generate(`${constants.ZENDESK_TICKETS}`, opts), auth.ensureAuthenticated, getTickets);
       app.get(path.generate(`/:recordId/${constants.ZENDESK_TICKETS}`, opts), auth.ensureAuthenticated, getTickets);

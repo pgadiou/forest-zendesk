@@ -6,7 +6,6 @@ const router = express.Router();
 const permissionMiddlewareCreator = new PermissionMiddlewareCreator('users');
 
 
-
 // This file contains the logic of every route in Forest Admin for the collection users:
 // - Native routes are already generated but can be extended/overriden - Learn how to extend a route here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/routes/extend-a-route
 // - Smart action routes will need to be added as you create new Smart Actions - Learn how to create a Smart Action here: https://docs.forestadmin.com/documentation/v/v6/reference-guide/actions/create-and-manage-smart-actions
@@ -31,6 +30,8 @@ router.delete('/users/:recordId', permissionMiddlewareCreator.delete(), (request
 
 // Get a list of Users
 router.get('/users', permissionMiddlewareCreator.list(), (request, response, next) => {
+  const filterParser = require('forest-express-sequelize/dist/services/filters-parser');
+
   const currentUser = request.user;
 
   const recordsGetter = new RecordsGetter(users);

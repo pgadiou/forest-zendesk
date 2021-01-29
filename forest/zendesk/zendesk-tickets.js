@@ -1,5 +1,6 @@
 const { collection } = require('forest-express-sequelize');
 const constants = require('../../zendesk/constants');
+const TicketGetter = require('../../zendesk/services/ticket-getter');
 
 collection(constants.ZENDESK_TICKETS, {
   // isSearchable: true,
@@ -9,13 +10,13 @@ collection(constants.ZENDESK_TICKETS, {
     endpoint: constants.ZENDESK_ACTION_ENDPOINT_ADD_COMMENT,
     fields: [
       {
-        field: 'Comment',
+        field: constants.ZENDESK_ACTION_FORM_ADD_COMMENT_CONTENT,
         description: 'Input the Text for your comment',
         type: 'String',
         isRequired: true
       },
       {
-        field: 'Private or Public',
+        field: constants.ZENDESK_ACTION_FORM_ADD_COMMENT_PUBLIC,
         description: 'Is your comment private or public?',
         type: 'Enum',
         enums: ['Private', 'Public'],
@@ -24,7 +25,28 @@ collection(constants.ZENDESK_TICKETS, {
     ],
     hooks: {
       load: ({ fields, record }) => {
-        fields['Private or Public'].value = 'Private';
+        fields[constants.ZENDESK_ACTION_FORM_ADD_COMMENT_PUBLIC].value = 'Private';
+        return fields;
+      },
+      change: {
+      },
+    },    
+  }, {
+    name: 'Change Priority',
+    type: 'single',
+    endpoint: constants.ZENDESK_ACTION_ENDPOINT_CHANGE_TICKET_PRIORITY,
+    fields: [
+      {
+        field: constants.ZENDESK_ACTION_FORM_CHANGE_TICKET_PRIORITY,
+        description: 'What is the new priority?',
+        type: 'Enum',
+        enums: constants.ZENDESK_TICKETS_PRIORITY_ENUM,
+        isRequired: true
+      },
+    ],
+    hooks: {
+      load: ({ fields, record}) => {
+        fields[constants.ZENDESK_ACTION_FORM_CHANGE_TICKET_PRIORITY].value = record.priority;
         return fields;
       },
       change: {
@@ -50,12 +72,12 @@ collection(constants.ZENDESK_TICKETS, {
   }, {
     field: 'priority',
     type: 'Enum',
-    enums: ["urgent", "high", "normal", "low"],
+    enums: constants.ZENDESK_TICKETS_PRIORITY_ENUM,
     isSortable: true,
   }, {
     field: 'status',
     type: 'Enum',
-    enums: ["new", "open", "pending", "hold", "solved", "closed"],
+    enums: constants.ZENDESK_TICKETS_STATUS_ENUM,
     isSortable: true,
   }, {
     field: 'subject',
