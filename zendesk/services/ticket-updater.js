@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 const axios = require('axios');
 const AbstractGetter = require('./abstract-getter');
@@ -23,7 +24,7 @@ class TicketUpdater extends AbstractGetter {
       //console.log(response);
       return response.data.ticket;
     });
-  };
+  }
 }
 
 module.exports = TicketUpdater;

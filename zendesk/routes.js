@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 var _ = require('lodash');
 const { RecordSerializer } = require('forest-express');
@@ -20,11 +21,6 @@ var GroupGetter = require('./services/group-getter');
 
 var OrganizationsGetter = require('./services/organizations-getter');
 var OrganizationGetter = require('./services/organization-getter');
-
-var SmartActions = require('./services/smart-actions');
-
-// var serializeTickets = require('./serializers/tickets');
-// var serializeUsers = require('./serializers/users');
 
 var auth = require('forest-express/dist/services/auth');
 var path = require('forest-express/dist/services/path');
@@ -85,6 +81,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
   var getTicketsComment = function (request, response, next) {
     request.params.parentRelationshipId = request.params.composedId.split('|')[0];
     new TicketsCommentsGetter(Implementation, _.extend(request.query, request.params), request.user, opts, integrationInfo).perform()
+    // eslint-disable-next-line no-unused-vars
     .then(async function ([count, records]) {
       serializeRecord(records.filter(record => record.id===request.params.composedId)[0], constants.ZENDESK_TICKETS_COMMENTS, request, response);
     })["catch"](next);
@@ -141,6 +138,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
     .update({
       priority: values[constants.ZENDESK_ACTION_FORM_CHANGE_TICKET_PRIORITY],
     })
+    // eslint-disable-next-line no-unused-vars
     .then(async function (record) {
       response.send({
 //        success: '',
@@ -158,6 +156,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
         public: values[constants.ZENDESK_ACTION_FORM_ADD_COMMENT_PUBLIC] === 'Public',
       }
     })
+    // eslint-disable-next-line no-unused-vars
     .then(async function (record) {
       response.send({
 //        success: '',
@@ -166,6 +165,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
     })["catch"](next);
   };
 
+  // eslint-disable-next-line no-unused-vars
   var performActionHookLoad = function (request, response, next) {
     const recordId = request.body.recordIds[0]; // TODO: change here => call the getter?
     //TODO: Use the correct Getter regarding the smart action related collection

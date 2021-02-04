@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const express = require('express');
 const { PermissionMiddlewareCreator, RecordGetter, RecordsGetter } = require('forest-express-sequelize');
 const { users } = require('../models');
@@ -30,8 +31,6 @@ router.delete('/users/:recordId', permissionMiddlewareCreator.delete(), (request
 
 // Get a list of Users
 router.get('/users', permissionMiddlewareCreator.list(), (request, response, next) => {
-  const filterParser = require('forest-express-sequelize/dist/services/filters-parser');
-
   const currentUser = request.user;
 
   const recordsGetter = new RecordsGetter(users);
@@ -55,7 +54,7 @@ router.get('/users/count', permissionMiddlewareCreator.list(), (request, respons
 router.get('/users/:recordId', permissionMiddlewareCreator.details(), (request, response, next) => {
   const currentUser = request.user;
 
-  if (request.params.recordId === 'count') { return next();};
+  if (request.params.recordId === 'count') { return next(); }
   const recordGetter = new RecordGetter(users);
   recordGetter.get(request.params.recordId)
   .then(record => {

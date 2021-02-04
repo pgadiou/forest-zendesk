@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { collection } = require('forest-express-sequelize');
 const constants = require('../../zendesk/constants');
 

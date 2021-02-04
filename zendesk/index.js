@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 var _ = require('lodash');
 var logger = require('forest-express/dist/services/logger');
@@ -17,7 +18,9 @@ function Checker(opts, Implementation, app) {
 
 
   function isProperlyIntegrated() {
-    return opts.apiKey && opts.mapping;
+    if (! (opts.apiKey && opts.mapping) ) return false;
+    if (opts.authMethod && (!opts.serviceAccount)) return false;
+    return true;
   }
 
   function castToArray(value) {

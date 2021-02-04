@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 const axios = require('axios');
 const AbstractGetter = require('./abstract-getter');
@@ -17,7 +18,7 @@ class OrganizationGetter extends AbstractGetter {
       //console.log(response);
       return response.data.organization;
     });
-  };
+  }
 }
 
 module.exports = OrganizationGetter;

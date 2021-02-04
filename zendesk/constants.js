@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 module.exports = {
   ZENDESK_USERS: 'zendesk_users',

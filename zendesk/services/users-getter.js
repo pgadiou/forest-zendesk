@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 const axios = require('axios');
 const AbstractRecordsGetter = require('./abstract-records-getter');
@@ -20,12 +21,12 @@ class UsersGetter extends AbstractRecordsGetter {
       collection_name: constants.ZENDESK_USERS,
     });
 
-    return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/search.json`, {
+    return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/users/search.json`, {
       headers: {
         'Authorization': `Basic ${this.getToken()}` 
       },
       params: {
-        query: `type:user ${filterConditions.join(' ')}`,
+        query: `${filterConditions.join(' ')}`,
         per_page: this.params.page.size,
         page: this.params.page.number,
         sort_by: sort_by,
@@ -34,7 +35,7 @@ class UsersGetter extends AbstractRecordsGetter {
     })
     .then( async (response) => {
       let count = response.data.count;
-      let records = response.data.results;
+      let records = response.data.users;
       const groupIds = _.uniq(_.map(records, 'default_group_id'));
       let groups = [];
 

@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 class AbstractGetter {
   constructor(Implementation, params, user, opts, integrationInfo) {
@@ -11,13 +12,14 @@ class AbstractGetter {
     this.user = user;
   } 
 
-  getToken (email) {
-    return Buffer.from(`${this.user.email}/token:${this.apiKey}`).toString('base64');
-  };
+  getToken () {
+    const authEmail = this.opts.authMethod === 'serviceAccount'? this.opts.serviceAccount : this.user.email;
+    return Buffer.from(`${authEmail}/token:${this.apiKey}`).toString('base64');
+  }
 
   perform () {
     throw new Error('You have to implement the method perform!');
-  };
+  }
 }
 
 module.exports = AbstractGetter;

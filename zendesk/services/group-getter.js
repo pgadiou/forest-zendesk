@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 const axios = require('axios');
 const AbstractGetter = require('./abstract-getter');
@@ -17,7 +18,7 @@ class GroupGetter extends AbstractGetter {
       //console.log(response);
       return response.data.group;
     });
-  };
+  }
 }
 
 module.exports = GroupGetter;

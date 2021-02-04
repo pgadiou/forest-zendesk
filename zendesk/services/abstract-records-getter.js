@@ -1,6 +1,6 @@
 "use strict";
+/* eslint-disable no-undef */
 
-const cookieParser = require("cookie-parser");
 const AbstractGetter = require("./abstract-getter");
 
 const Liana = require('forest-express');
@@ -30,6 +30,9 @@ class AbstractRecordsGetter extends AbstractGetter {
     }  
 
     let filterConditions = [];
+    if (this.params.search) {
+      filterConditions.push(this.params.search)
+    }
     for (let filter of filters) {
       // Trick to use fake fields for filtering field (API requirements)
       filter.field = filter.field.replace('_filtering_only',''); 
@@ -43,6 +46,8 @@ class AbstractRecordsGetter extends AbstractGetter {
         filterConditions.push(`${filter.value}`);
       }
       else {
+        //TODO: support more than that? <= & >= & - (not)
+        // cf. Search operators => https://support.zendesk.com/hc/en-us/articles/203663226-Zendesk-Support-search-reference#topic_lhr_wsc_3v
         let operator = ':';
         switch (filter.operator) {
           case 'before':

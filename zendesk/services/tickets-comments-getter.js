@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-undef */
 
 const axios = require('axios');
 const AbstractRecordsGetter = require('./abstract-records-getter');
