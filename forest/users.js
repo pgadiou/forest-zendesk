@@ -4,7 +4,7 @@ const { collection } = require('forest-express-sequelize');
 const UserUtil = require('../zendesk/services/user-util');
 let userUtil = new UserUtil({
   apiKey: process.env.ZENDESK_API_TOKEN,
-  authMethod: 'serviceAccount',
+  authMethod: process.env.ZENDESK_AUTH_METHOD,
   serviceAccount: process.env.ZENDESK_SERVICE_ACCOUNT,
 });
 const constants = require('../zendesk/constants');
