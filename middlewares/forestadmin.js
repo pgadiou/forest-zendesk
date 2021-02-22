@@ -17,12 +17,17 @@ module.exports = async function forestadmin(app) {
     sequelize,
   }));
 
+  // Zendesk Module configuration
   var configStore = ConfigStore.getInstance();
   var client = new zendesk({
     mapping: 'users.email', 
     apiKey: process.env.ZENDESK_API_TOKEN,
-    authMethod: 'serviceAccount',
-    serviceAccount: process.env.ZENDESK_SERVICE_ACCOUNT,
+    /** Authentication parameters:
+           - serviceAccount => user for Zendesk Auth = serviceAccount,
+           - otherwise => user for Zendesk Auth = user connected to forest (cf. currentUser)
+    **/
+    authMethod: 'serviceAccount', 
+    serviceAccount: process.env.ZENDESK_SERVICE_ACCOUNT, // 
   }, configStore.Implementation, app);
   configStore.zendesk = client;
   

@@ -28,12 +28,8 @@ class UserUtil {
         query: `type:user user:${email}`,
       }
     }).then(response => {
-      //console.log(response);
       return response.data.results[0];    
     })
-    // .catch(error => {
-    //   console.log(error)
-    // });
   }
 }
 

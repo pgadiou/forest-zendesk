@@ -166,9 +166,8 @@ module.exports = function Routes(app, model, Implementation, opts) {
   };
 
   // eslint-disable-next-line no-unused-vars
-  var performActionHookLoad = function (request, response, next) {
-    const recordId = request.body.recordIds[0]; // TODO: change here => call the getter?
-    //TODO: Use the correct Getter regarding the smart action related collection
+  var performActionTicketHookLoad = function (request, response, next) {
+    const recordId = request.body.recordIds[0]; 
     new TicketGetter(Implementation, _.extend({ticketId: recordId}), request.user, opts, integrationInfo).perform()
     .then((record) => {
       let schema =  Implementation.Schemas.schemas[request.body.collectionName];
@@ -185,7 +184,7 @@ module.exports = function Routes(app, model, Implementation, opts) {
   this.perform = function () {
     if (integrationInfo) {
       app.post(`${constants.ZENDESK_ACTION_ENDPOINT_ADD_COMMENT}`, auth.ensureAuthenticated, actionAddComment);
-      app.post(`/forest/actions/zendesk-*/hooks/load`, auth.ensureAuthenticated, performActionHookLoad);
+      app.post(`/forest/actions/zendesk-ticket-*/hooks/load`, auth.ensureAuthenticated, performActionTicketHookLoad);
       app.post(`${constants.ZENDESK_ACTION_ENDPOINT_CHANGE_TICKET_PRIORITY}`, auth.ensureAuthenticated, actionChangeTicketPriority);
 
       app.get(path.generate(`${constants.ZENDESK_TICKETS}`, opts), auth.ensureAuthenticated, getTickets);

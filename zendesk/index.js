@@ -51,16 +51,10 @@ function Checker(opts, Implementation, app) {
       return;
     }
 
-    // if (integrationCollectionMatch(opts, model)) {
       new Routes(app, model, Implementation, opts).perform();
-    // }
   };
- //let usersSchema = Schemas.schemas['users'];
  let usersModel = Implementation.getModels()['users'];
 
-  // this.defineFields(usersModel, usersSchema);
-//  Schemas.schemas['users'] = usersSchema;
-  
   this.defineRoutes(app, usersModel);
 
 }
