@@ -1,59 +1,26 @@
 /* eslint-disable no-undef */
 const { collection } = require('forest-express-sequelize');
-const constants = require('../../zendesk/constants');
+
+const axios = require('axios');
+const {getToken} = require('../../services/helpers');
+
+const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
 
 // Search on tickets => https://support.zendesk.com/hc/en-us/articles/203663206-Searching-tickets
-collection(constants.ZENDESK_TICKETS, {
-  // isSearchable: true,
+collection('zendesk_tickets', {
   actions: [{
-    name: 'Add Comment',
-    type: 'single',
-    endpoint: constants.ZENDESK_ACTION_ENDPOINT_ADD_COMMENT,
-    fields: [
-      {
-        field: constants.ZENDESK_ACTION_FORM_ADD_COMMENT_CONTENT,
-        description: 'Input the Text for your comment',
-        type: 'String',
-        isRequired: true
-      },
-      {
-        field: constants.ZENDESK_ACTION_FORM_ADD_COMMENT_PUBLIC,
-        description: 'Is your comment private or public?',
-        type: 'Enum',
-        enums: ['Private', 'Public'],
-        isRequired: true
-      },
-    ],
-    hooks: {
-      // eslint-disable-next-line no-unused-vars
-      load: ({ fields, record }) => {
-        fields[constants.ZENDESK_ACTION_FORM_ADD_COMMENT_PUBLIC].value = 'Private';
-        return fields;
-      },
-      change: {
-      },
-    },    
-  }, {
     name: 'Change Priority',
     type: 'single',
-    endpoint: constants.ZENDESK_ACTION_ENDPOINT_CHANGE_TICKET_PRIORITY,
+    endpoint: '/forest/actions/zendesk-ticket-change-priority',
     fields: [
       {
-        field: constants.ZENDESK_ACTION_FORM_CHANGE_TICKET_PRIORITY,
+        field: 'New Ticket Priority',
         description: 'What is the new priority?',
         type: 'Enum',
-        enums: constants.ZENDESK_TICKETS_PRIORITY_ENUM,
+        enums: ['urgent', 'high', 'normal', 'low'],
         isRequired: true
       },
     ],
-    hooks: {
-      load: ({ fields, record}) => {
-        fields[constants.ZENDESK_ACTION_FORM_CHANGE_TICKET_PRIORITY].value = record.priority;
-        return fields;
-      },
-      change: {
-      },
-    },    
   }],
   fields: [{
     field: 'id',
@@ -70,26 +37,25 @@ collection(constants.ZENDESK_TICKETS, {
   }, {
     field: 'type',
     type: 'Enum',
-    enums: ["problem", "incident", "question", "task"],
+    enums: ['problem', 'incident', 'question', 'task'],
     isFilterable: true,
     isSortable: true,
   }, {
     field: 'priority',
     type: 'Enum',
-    enums: constants.ZENDESK_TICKETS_PRIORITY_ENUM,
+    enums: ['urgent', 'high', 'normal', 'low'],
     isFilterable: true,
     isSortable: true,
   }, {
     field: 'status',
     type: 'Enum',
-    enums: constants.ZENDESK_TICKETS_STATUS_ENUM,
+    enums: ['new', 'open', 'pending', 'hold', 'solved', 'closed'],
     isFilterable: true,
     isSortable: true,
   }, {
     field: 'subject',
     type: 'String',
     isFilterable: true,
-    // isSortable: true,
   }, {
     field: 'description',
     type: 'String',
@@ -100,18 +66,30 @@ collection(constants.ZENDESK_TICKETS, {
   }, {
     field: 'requester',
     type: 'String',
-    reference: `${constants.ZENDESK_USERS}.id`,
+    reference: 'zendesk_users.id',
+    get: (ticket) => {
+      return getZendeskUserById(ticket.requester_id);
+    }    
   }, {
     field: 'submitter',
     type: 'String',
-    reference: `${constants.ZENDESK_USERS}.id`,
+    reference: 'zendesk_users.id',
+    get: (ticket) => {
+      return getZendeskUserById(ticket.requester_id);
+    }
   }, {
     field: 'assignee',
     type: 'String',
-    reference: `${constants.ZENDESK_USERS}.id`,
+    reference: 'zendesk_users.id',
+    get: (ticket) => {
+      return getZendeskUserById(ticket.requester_id);
+    }
   }, {
     field: 'direct_url',
     type: 'String',
+    get: (ticket) => {
+      return `${ZENDESK_URL_PREFIX}/agent/tickets/${ticket.id}`;
+    },    
   }, {
     field: 'is_public',
     type: 'Boolean',
@@ -122,38 +100,19 @@ collection(constants.ZENDESK_TICKETS, {
     field: 'tags',
     type: ['String'],
     isFilterable: true, // not => filtering on array is not yet possible
-  }, {
-    field: 'requester_filtering_only',
-    type: 'String',
-    isFilterable: true,
-  }, {
-    field: 'submitter_filtering_only',
-    type: 'String',
-    isFilterable: true,
-  }, {
-    field: 'assignee_filtering_only',
-    type: 'String',
-    isFilterable: true,
-  }, {
-    field: 'created_filtering_only',
-    type: 'Dateonly',
-    isFilterable: true,
-  }, {
-    field: 'updated_filtering_only',
-    type: 'Dateonly',
-    isFilterable: true,
-  }, {
-    field: 'solved_filtering_only',
-    type: 'Dateonly',
-    isFilterable: true,
-  }, {
-    field: 'due_date_filtering_only',
-    type: 'Dateonly',
-    isFilterable: true,
-  }, {
-    field: constants.ZENDESK_TICKET_COMMENTS_RELATIONSHIP,
-    type: ['String'],
-    reference: `${constants.ZENDESK_TICKETS_COMMENTS}.id`,
-  } ],
+  }, ],
   segments: [],
 });
+
+function getZendeskUserById(userId) {
+  if(!userId) return null;
+  return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/users/${userId}`, {
+    headers: {
+      'Authorization': `Basic ${getToken()}` 
+    },
+  })
+  .then( async (resp) => {
+    const user = resp.data.user;
+    return user;
+  });
+}
