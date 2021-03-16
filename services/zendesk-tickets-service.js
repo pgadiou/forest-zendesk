@@ -5,7 +5,7 @@ const { RecordSerializer } = require('forest-express-sequelize');
 const axios = require('axios');
 const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
 
-const {getFilterConditons, getSort, getToken} = require('./helpers');
+const {getFilterConditons, getSort, getToken} = require('./forest-smart-collection-helpers');
 
 async function getTickets(request, response, next, additionalFilter) {
 
@@ -68,7 +68,26 @@ async function getTicket(request, response, next) {
   
 }
 
+async function udpateTicket(ticketId, newValues) {
+  const body = {
+    ticket: newValues
+  };
+  return axios.put(`${ZENDESK_URL_PREFIX}/api/v2/tickets/${ticketId}`, 
+    body,
+    {
+      headers: {
+        'Authorization': `Basic ${getToken()}` 
+      },
+    }
+  )
+  .then( async (resp) => {
+    let record = resp.data.ticket;
+    return record;
+  })
+}
+
 module.exports = {
   getTickets,
-  getTicket
+  getTicket,
+  udpateTicket
 };

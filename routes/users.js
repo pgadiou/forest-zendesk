@@ -6,7 +6,7 @@ const { users } = require('../models');
 const router = express.Router();
 const permissionMiddlewareCreator = new PermissionMiddlewareCreator('users');
 
-const {getTickets} = require('../services/tickets-getter');
+const {getTickets} = require('../services/zendesk-tickets-service');
 
 // Create a User
 router.post('/users', permissionMiddlewareCreator.create(), (request, response, next) => {
@@ -51,7 +51,7 @@ router.delete('/users', permissionMiddlewareCreator.delete(), (request, response
 router.get('/users/:userId/relationships/ze_requested_tickets', async (request, response, next) => {
     // Get the user email for filtering on requester
     const user = await users.findByPk(request.params.userId);
-    getTickets(request, response, next, `requester:${user.email}`)
+    getTickets(request, response, next, `requester:${user.email}`);
 });
 
 

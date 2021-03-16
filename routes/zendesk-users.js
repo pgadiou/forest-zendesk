@@ -5,7 +5,7 @@ const { PermissionMiddlewareCreator } = require('forest-express-sequelize');
 const router = express.Router();
 const permissionMiddlewareCreator = new PermissionMiddlewareCreator('zendesk_users');
 
-const {getUsers, getUser} = require('../services/users-getter');
+const {getUsers, getUser} = require('../services/zendesk-users-service');
 
 // Get a list of Zendesk Users
 router.get('/zendesk_users', permissionMiddlewareCreator.list(), (request, response, next) => {

@@ -2,7 +2,7 @@
 const { collection } = require('forest-express-sequelize');
 
 const axios = require('axios');
-const {getToken} = require('../../services/helpers');
+const {getToken} = require('../services/forest-smart-collection-helpers');
 
 const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
 

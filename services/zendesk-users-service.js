@@ -5,7 +5,7 @@ const { RecordSerializer } = require('forest-express-sequelize');
 const axios = require('axios');
 const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
 
-const {getFilterConditons, getSort, getToken} = require('./helpers');
+const {getFilterConditons, getSort, getToken} = require('./forest-smart-collection-helpers');
 
 async function getUsers(request, response, next) {
 
