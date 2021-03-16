@@ -9,7 +9,10 @@ const {getFilterConditons, getSort, getToken} = require('./forest-smart-collecti
 
 async function getTickets(request, response, next, additionalFilter) {
 
-  let filterConditions = getFilterConditons(request.query);
+  let filterConditions = getFilterConditons(request.query, {
+    // Zendesk API requires to search on field ticket_type for the ticket type
+    replaceFieldNames: {'type':'ticket_type'}
+  });
   if (additionalFilter) filterConditions.push(additionalFilter);
 
   // Transform the sorting to Zendesk Format

@@ -8,7 +8,8 @@ function getToken () {
   return Buffer.from(`${authEmail}/token:${apiKey}`).toString('base64');
 }
 
-function getFilterConditons(params) {
+function getFilterConditons(params, options) {
+  const {replaceFieldNames} = options|{};
 
   let filters = [];
   if (params.filters) {
@@ -28,6 +29,11 @@ function getFilterConditons(params) {
   for (let filter of filters) {
     // Trick to use fake fields for filtering field (API requirements)
     filter.field = filter.field.replace('_filtering_only',''); 
+
+    // Some fields are displayed with a name and filterable with another name
+    if (replaceFieldNames[filter.field]) {
+      filter.field = replaceFieldNames[filter.field];
+    }
 
     if (filter.field==='id') {
       filterConditions.push(`${filter.value}`);
