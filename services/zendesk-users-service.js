@@ -92,6 +92,7 @@ function getZendeskUserByEmail(userEmail) {
     return null;
   });
 }
+
 module.exports = {
   getUsers,
   getUser,

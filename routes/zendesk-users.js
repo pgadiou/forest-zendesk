@@ -13,7 +13,7 @@ router.get('/zendesk_users', permissionMiddlewareCreator.list(), (request, respo
   getUsers(request, response, next);
 });
 
-// Get a Zendesk Users
+// Get a Zendesk User
 router.get('/zendesk_users/:userId', permissionMiddlewareCreator.details(), (request, response, next) => {
   getUser(request, response, next);
 });

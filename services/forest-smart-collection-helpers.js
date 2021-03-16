@@ -73,7 +73,6 @@ function getSort(params, options) {
     }
   }
   return {sort_by, sort_order};
-
 }
 
 
