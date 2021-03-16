@@ -12,7 +12,7 @@ router.get('/zendesk_tickets', permissionMiddlewareCreator.list(), (request, res
   getTickets(request, response, next);
 });
 
-// Get a Zendesk Tickets
+// Get a Zendesk Ticket
 router.get('/zendesk_tickets/:ticketId', permissionMiddlewareCreator.details(), (request, response, next) => {
   getTicket(request, response, next);
 });

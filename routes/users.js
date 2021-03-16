@@ -51,7 +51,8 @@ router.delete('/users', permissionMiddlewareCreator.delete(), (request, response
 router.get('/users/:userId/relationships/ze_requested_tickets', async (request, response, next) => {
     // Get the user email for filtering on requester
     const user = await users.findByPk(request.params.userId);
-    getTickets(request, response, next, `requester:${user.email}`);
+    const additionalFilter = `requester:${user.email}`;
+    getTickets(request, response, next, additionalFilter);
 });
 
 
