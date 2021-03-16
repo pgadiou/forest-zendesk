@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 const { collection } = require('forest-express-sequelize');
 
-const axios = require('axios');
-const {getToken} = require('../services/forest-smart-collection-helpers');
+const {getZendeskUserById} = require('../services/zendesk-users-service');
 
 const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
 
@@ -100,19 +99,37 @@ collection('zendesk_tickets', {
     field: 'tags',
     type: ['String'],
     isFilterable: true, // not => filtering on array is not yet possible
+  }, 
+  /* All the fields below are meant for filtering only purpose */ 
+  {
+    field: 'requester_filtering_only',
+    type: 'String',
+    isFilterable: true,
+  }, {
+    field: 'submitter_filtering_only',
+    type: 'String',
+    isFilterable: true,
+  }, {
+    field: 'assignee_filtering_only',
+    type: 'String',
+    isFilterable: true,
+  }, {
+    field: 'created_filtering_only',
+    type: 'Dateonly',
+    isFilterable: true,
+  }, {
+    field: 'updated_filtering_only',
+    type: 'Dateonly',
+    isFilterable: true,
+  }, {
+    field: 'solved_filtering_only',
+    type: 'Dateonly',
+    isFilterable: true,
+  }, {
+    field: 'due_date_filtering_only',
+    type: 'Dateonly',
+    isFilterable: true,
   }, ],
   segments: [],
 });
 
-function getZendeskUserById(userId) {
-  if(!userId) return null;
-  return axios.get(`${ZENDESK_URL_PREFIX}/api/v2/users/${userId}`, {
-    headers: {
-      'Authorization': `Basic ${getToken()}` 
-    },
-  })
-  .then( async (resp) => {
-    const user = resp.data.user;
-    return user;
-  });
-}

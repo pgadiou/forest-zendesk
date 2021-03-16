@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 const { collection } = require('forest-express-sequelize');
+const { getZendeskOrganizationById } = require('../services/zendesk-organizations-service');
+const { getZendeskGroupById } = require('../services/zendesk-groups-service');
 
 const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
 
@@ -67,7 +69,7 @@ collection('zendesk_users', {
     type: 'String',
     get: (user) => {
       return `${ZENDESK_URL_PREFIX}/agent/users/${user.id}`;
-    },        
+    },
   }, {
     field: 'notes',
     type: 'String',
@@ -99,6 +101,49 @@ collection('zendesk_users', {
     get: (user) => {
       return user.photo ? user.photo.content_url : null;
     }
+  }, {
+    field: 'default_group',
+    type: 'String',
+    reference: 'zendesk_groups.id',
+    get: (user) => {
+      return getZendeskGroupById(user.default_group_id);
+    },    
+  }, {
+    field: 'organization',
+    type: 'String',
+    reference: 'zendesk_organizations.id',
+    get: (user) => {
+      return getZendeskOrganizationById(user.organization_id);
+    },    
+  },
+  /* All the fields below are meant for filtering only purpose */ 
+  {
+    field: 'group_filtering_only',
+    type: 'String',
+    isFilterable: true,
+  }, {
+    field: 'organization_filtering_only',
+    type: 'String',
+    isFilterable: true,
+  }, {
+    field: 'created_filtering_only',
+    type: 'Dateonly',
+    isFilterable: true,
+  }, {
+    field: 'updated_filtering_only',
+    type: 'Dateonly',
+  }, {
+    field: 'is_verified_filtering_only',
+    type: 'Boolean',
+    isFilterable: true,
+  }, {
+    field: 'is_suspended_filtering_only',
+    type: 'Boolean',
+    isFilterable: true,
+  }, {
+    field: 'is_active_filtering_only',
+    type: 'Boolean',
+    isFilterable: true,
   }, ],
   segments: [],
 });

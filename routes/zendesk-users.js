@@ -15,7 +15,6 @@ router.get('/zendesk_users', permissionMiddlewareCreator.list(), (request, respo
 // Get a Zendesk Users
 router.get('/zendesk_users/:userId', permissionMiddlewareCreator.details(), (request, response, next) => {
   getUser(request, response, next);
-
 });
 
 module.exports = router;

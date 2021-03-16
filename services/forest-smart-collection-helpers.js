@@ -26,6 +26,8 @@ function getFilterConditons(params) {
     filterConditions.push(params.search)
   }
   for (let filter of filters) {
+    // Trick to use fake fields for filtering field (API requirements)
+    filter.field = filter.field.replace('_filtering_only',''); 
 
     if (filter.field==='id') {
       filterConditions.push(`${filter.value}`);

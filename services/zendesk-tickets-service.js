@@ -10,8 +10,6 @@ const {getFilterConditons, getSort, getToken} = require('./forest-smart-collecti
 async function getTickets(request, response, next, additionalFilter) {
 
   let filterConditions = getFilterConditons(request.query);
-
-  // Add Filter on Requester Email
   if (additionalFilter) filterConditions.push(additionalFilter);
 
   // Transform the sorting to Zendesk Format
