@@ -144,6 +144,10 @@ collection('zendesk_users', {
     field: 'is_active_filtering_only',
     type: 'Boolean',
     isFilterable: true,
+  }, {
+    field: 'ze_requested_tickets',
+    type: ['String'],
+    reference: 'zendesk_tickets.id',
   }, ],
   segments: [],
 });
