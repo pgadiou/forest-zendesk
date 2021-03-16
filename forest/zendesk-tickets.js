@@ -74,14 +74,14 @@ collection('zendesk_tickets', {
     type: 'String',
     reference: 'zendesk_users.id',
     get: (ticket) => {
-      return getZendeskUserById(ticket.requester_id);
+      return getZendeskUserById(ticket.submitter_id);
     }
   }, {
     field: 'assignee',
     type: 'String',
     reference: 'zendesk_users.id',
     get: (ticket) => {
-      return getZendeskUserById(ticket.requester_id);
+      return getZendeskUserById(ticket.assignee_id);
     }
   }, {
     field: 'direct_url',
