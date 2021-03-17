@@ -129,7 +129,11 @@ collection('zendesk_tickets', {
     field: 'due_date_filtering_only',
     type: 'Dateonly',
     isFilterable: true,
-  }, ],
+  }, {
+    field: 'ze_tickets_comments',
+    type: ['String'],
+    reference: 'zendesk_tickets_comments.id',
+  } ],
   segments: [],
 });
 
