@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 const { collection } = require('forest-express-sequelize');
-const constants = require('../../zendesk/constants');
 
-collection(constants.ZENDESK_GROUPS, {
+collection('zendesk_organizations', {
   actions: [],
   fields: [{
     field: 'id',
@@ -17,17 +16,27 @@ collection(constants.ZENDESK_GROUPS, {
     field: 'name',
     type: 'String',
   }, {
-    field: 'description',
+    field: 'details',
     type: 'String',
   }, {
-    field: 'default',
+    field: 'domain_names',
+    type: ['String'],
+  }, {
+    field: 'notes',
+    type: 'String',
+  }, {
+    field: 'shared_comments',
     type: 'Boolean',
   }, {
-    field: 'deleted',
+    field: 'shared_tickets',
     type: 'Boolean',
+  }, {
+    field: 'tags',
+    type: ['String'],
   }, {
     field: 'url',
     type: 'String',
    }, ],
+
   segments: [],
 });

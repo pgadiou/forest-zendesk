@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
 const { collection } = require('forest-express-sequelize');
-const { Zendesk } = require('../../zendesk');
-const constants = require('../../zendesk/constants');
+const { getZendeskOrganizationById } = require('../services/zendesk-organizations-service');
+const { getZendeskGroupById } = require('../services/zendesk-groups-service');
+
+const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
 
 // Search on users => https://support.zendesk.com/hc/en-us/articles/203663216-Searching-users-groups-and-organizations#topic_duj_sbb_vc
-collection(constants.ZENDESK_USERS, {
+collection('zendesk_users', {
   isSearchable: true,
   actions: [],
   fields: [{
@@ -25,7 +27,7 @@ collection(constants.ZENDESK_USERS, {
   }, {
     field: 'role',
     type: 'Enum',
-    enums: ["end-user", "agent", "admin"],
+    enums: ['end-user', 'agent', 'admin'],
     isFilterable: true,
   }, {
     field: 'role_type',
@@ -65,6 +67,9 @@ collection(constants.ZENDESK_USERS, {
   }, {
     field: 'direct_url',
     type: 'String',
+    get: (user) => {
+      return `${ZENDESK_URL_PREFIX}/agent/users/${user.id}`;
+    },
   }, {
     field: 'notes',
     type: 'String',
@@ -77,9 +82,6 @@ collection(constants.ZENDESK_USERS, {
     field: 'tags',
     type: ['String'],
     isFilterable: true,// is it possible? => no arrays are not yet filterable
-  // }, {
-  //   field: 'iana_time_zone',
-  //   type: 'String',
   }, {
     field: 'time_zone',
     type: 'String',
@@ -100,19 +102,22 @@ collection(constants.ZENDESK_USERS, {
       return user.photo ? user.photo.content_url : null;
     }
   }, {
-    field: constants.ZENDESK_REQUESTED_TICKETS,
-    type: ['String'],
-    reference: `${constants.ZENDESK_TICKETS}.id`,
-  }, {
-    field: 'user',
+    field: 'default_group',
     type: 'String',
-    //TODO: how to make this configurable?
-    reference: 'users.id', 
-    get: async (zendesk_user) => {
-      const user = await Zendesk.getUserByUserField('email', zendesk_user.email);
-      return user;
-    }
+    reference: 'zendesk_groups.id',
+    get: (user) => {
+      return getZendeskGroupById(user.default_group_id);
+    },    
   }, {
+    field: 'organization',
+    type: 'String',
+    reference: 'zendesk_organizations.id',
+    get: (user) => {
+      return getZendeskOrganizationById(user.organization_id);
+    },    
+  },
+  /* All the fields below are meant for filtering only purpose */ 
+  {
     field: 'group_filtering_only',
     type: 'String',
     isFilterable: true,
@@ -128,14 +133,6 @@ collection(constants.ZENDESK_USERS, {
     field: 'updated_filtering_only',
     type: 'Dateonly',
   }, {
-    field: 'default_group',
-    type: 'String',
-    reference: `${constants.ZENDESK_GROUPS}.id`,
-  }, {
-    field: 'default_organization',
-    type: 'String',
-    reference: `${constants.ZENDESK_ORGANIZATIONS}.id`,
-  }, {
     field: 'is_verified_filtering_only',
     type: 'Boolean',
     isFilterable: true,
@@ -144,17 +141,13 @@ collection(constants.ZENDESK_USERS, {
     type: 'Boolean',
     isFilterable: true,
   }, {
-    field: 'is_active_filtering_only', // not working?
+    field: 'is_active_filtering_only',
     type: 'Boolean',
     isFilterable: true,
   }, {
-    field: constants.ZENDESK_USER_GROUPS,
+    field: 'ze_requested_tickets',
     type: ['String'],
-    reference: `${constants.ZENDESK_GROUPS}.id`,
-  }, {
-    field: constants.ZENDESK_USER_ORGANIZATIONS,
-    type: ['String'],
-    reference: `${constants.ZENDESK_ORGANIZATIONS}.id`,
-  } ],
+    reference: 'zendesk_tickets.id',
+  }, ],
   segments: [],
 });

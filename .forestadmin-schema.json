@@ -842,57 +842,9 @@
       "reference": null,
       "inverseOf": null,
       "validations": []
-    }, {
-      "field": "ze_tickets_comments",
-      "type": ["String"],
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": "zendesk_tickets_comments.id",
-      "inverseOf": null,
-      "validations": []
     }],
     "segments": [],
     "actions": [{
-      "name": "Add Comment",
-      "type": "single",
-      "baseUrl": null,
-      "endpoint": "/forest/actions/zendesk-ticket-add-comment",
-      "httpMethod": "POST",
-      "redirect": null,
-      "download": false,
-      "fields": [{
-        "field": "Content",
-        "type": "String",
-        "defaultValue": null,
-        "enums": null,
-        "isRequired": true,
-        "reference": null,
-        "description": "Input the Text for your comment",
-        "position": 0,
-        "widget": null
-      }, {
-        "field": "Public",
-        "type": "Enum",
-        "defaultValue": null,
-        "enums": ["Private", "Public"],
-        "isRequired": true,
-        "reference": null,
-        "description": "Is your comment private or public?",
-        "position": 1,
-        "widget": null
-      }],
-      "hooks": {
-        "change": [],
-        "load": true
-      }
-    }, {
       "name": "Change Priority",
       "type": "single",
       "baseUrl": null,
@@ -917,158 +869,10 @@
         "widget": null
       }],
       "hooks": {
-        "change": [],
-        "load": true
+        "load": false,
+        "change": []
       }
     }]
-  }, {
-    "name": "zendesk_tickets_comments",
-    "nameOld": "zendesk_tickets_comments",
-    "icon": null,
-    "integration": null,
-    "isReadOnly": false,
-    "isSearchable": false,
-    "isVirtual": true,
-    "onlyForRelationships": true,
-    "paginationType": "page",
-    "fields": [{
-      "field": "attachments",
-      "type": ["Json"],
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "author",
-      "type": "String",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": "zendesk_users.id",
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "body",
-      "type": "String",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "created_at",
-      "type": "Date",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": true,
-      "isVirtual": true,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "html_body",
-      "type": "String",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "id",
-      "type": "Number",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "plain_body",
-      "type": "String",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "public",
-      "type": "Boolean",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "type",
-      "type": "String",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": null,
-      "inverseOf": null,
-      "validations": []
-    }],
-    "segments": [],
-    "actions": []
   }, {
     "name": "zendesk_users",
     "nameOld": "zendesk_users",
@@ -1152,21 +956,6 @@
       "isSortable": false,
       "isVirtual": true,
       "reference": "zendesk_groups.id",
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "default_organization",
-      "type": "String",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": "zendesk_organizations.id",
       "inverseOf": null,
       "validations": []
     }, {
@@ -1395,6 +1184,21 @@
       "inverseOf": null,
       "validations": []
     }, {
+      "field": "organization",
+      "type": "String",
+      "defaultValue": null,
+      "enums": null,
+      "integration": null,
+      "isFilterable": false,
+      "isPrimaryKey": false,
+      "isReadOnly": true,
+      "isRequired": false,
+      "isSortable": false,
+      "isVirtual": true,
+      "reference": "zendesk_organizations.id",
+      "inverseOf": null,
+      "validations": []
+    }, {
       "field": "organization_filtering_only",
       "type": "String",
       "defaultValue": null,
@@ -1549,21 +1353,6 @@
       "inverseOf": null,
       "validations": []
     }, {
-      "field": "user",
-      "type": "String",
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": "users.id",
-      "inverseOf": null,
-      "validations": []
-    }, {
       "field": "verified",
       "type": "Boolean",
       "defaultValue": null,
@@ -1608,36 +1397,6 @@
       "reference": "zendesk_tickets.id",
       "inverseOf": null,
       "validations": []
-    }, {
-      "field": "ze_user_groups",
-      "type": ["String"],
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": "zendesk_groups.id",
-      "inverseOf": null,
-      "validations": []
-    }, {
-      "field": "ze_user_organizations",
-      "type": ["String"],
-      "defaultValue": null,
-      "enums": null,
-      "integration": null,
-      "isFilterable": false,
-      "isPrimaryKey": false,
-      "isReadOnly": true,
-      "isRequired": false,
-      "isSortable": false,
-      "isVirtual": true,
-      "reference": "zendesk_organizations.id",
-      "inverseOf": null,
-      "validations": []
     }],
     "segments": [],
     "actions": []
@@ -1645,7 +1404,7 @@
   "meta": {
     "database_type": "postgres",
     "liana": "forest-express-sequelize",
-    "liana_version": "6.7.3",
+    "liana_version": "7.2.0",
     "engine": "nodejs",
     "engine_version": "14.15.1",
     "orm_version": "5.15.2"

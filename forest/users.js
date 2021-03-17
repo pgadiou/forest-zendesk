@@ -1,32 +1,15 @@
 /* eslint-disable no-undef */
 const { collection } = require('forest-express-sequelize');
 
-const UserUtil = require('../zendesk/services/user-util');
-let userUtil = new UserUtil({
-  apiKey: process.env.ZENDESK_API_TOKEN,
-  authMethod: process.env.ZENDESK_AUTH_METHOD,
-  serviceAccount: process.env.ZENDESK_SERVICE_ACCOUNT,
-});
-const constants = require('../zendesk/constants');
+const {getZendeskUserByEmail} = require('../services/zendesk-users-service');
 
 collection('users', {
   actions: [],
   fields: [
   {
-    //TODO: how to make it configurable?
-    field: constants.ZENDESK_REQUESTED_TICKETS,
+    field: 'ze_requested_tickets',
     type: ['String'],
-    reference: `${constants.ZENDESK_TICKETS}.id`,
-  },
-  {
-    //TODO: how to make it configurable?
-    field: 'zendesk_user',
-    type: 'String',
-    reference: `${constants.ZENDESK_USERS}.id`,
-    get: async (user) => {
-      const zendesk_user = await userUtil.findByEmail(user.email, user.currentUser);
-      return zendesk_user;
-    }
+    reference: 'zendesk_tickets.id',
   },
   {
     field: 'fullName',
@@ -34,7 +17,15 @@ collection('users', {
     get: (user) => {
       return `${user.firstname} ${user.lastname}`;
     }
-  }
+  },
+  {
+    field: 'zendesk_user',
+    type: 'String',
+    reference: 'zendesk_users.id',
+    get: async (user) => {
+      return await getZendeskUserByEmail(user.email);
+    }
+  },
   ],
   segments: [],
 });
