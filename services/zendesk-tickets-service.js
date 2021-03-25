@@ -5,11 +5,11 @@ const { RecordSerializer } = require('forest-express-sequelize');
 const axios = require('axios');
 const ZENDESK_URL_PREFIX = `https://${process.env.ZENDESK_SUBDOMAIN}.zendesk.com`;
 
-const {getFilterConditons, getSort, getToken} = require('./forest-smart-collection-helpers');
+const {getFilterConditions, getSort, getToken} = require('./forest-smart-collection-helpers');
 
 async function getTickets(request, response, next, additionalFilter) {
 
-  let filterConditions = getFilterConditons(request.query, {
+  let filterConditions = getFilterConditions(request.query, {
     // Zendesk API requires to search on field ticket_type for the ticket type
     replaceFieldNames: {'type':'ticket_type'}
   });
